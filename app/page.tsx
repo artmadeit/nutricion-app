@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   FormContainer,
+  SelectElement,
   TextFieldElement,
   useForm
 } from "react-hook-form-mui";
@@ -16,6 +17,8 @@ const schema = z.object({
   lastName: z.string().trim().min(1),
   interviewDate: z.date(),
   interviewTime: z.date(),
+  mealtime: z.string(), // TODO: use enum,
+  origin: z.string() // TODO: use enum,
 });
 
 export default function Home() {
@@ -34,6 +37,7 @@ export default function Home() {
               Datos generales de persona
             </Typography>
           </Grid>
+
           <Grid size={6}>
             <TextFieldElement
               fullWidth
@@ -77,6 +81,113 @@ export default function Home() {
                 minutes: renderTimeViewClock,
                 seconds: renderTimeViewClock,
               }}
+            />
+          </Grid>
+          <Grid size={6}>
+            <SelectElement
+              label="Tiempo de comida"
+              name="mealtime"
+              options={[
+                {
+                  id: '1',
+                  label: 'Desayuno'
+                },
+                {
+                  id: '2',
+                  label: 'M. mañana'
+                },
+                {
+                  id: '3',
+                  label: 'Almuerzo'
+                },
+                {
+                  id: '4',
+                  label: 'M. tarde'
+                },
+                {
+                  id: '5',
+                  label: 'Cena'
+                },
+                {
+                  id: '6',
+                  label: 'M. noche'
+                }
+              ]}
+              fullWidth
+            />
+          </Grid>
+          <Grid size={6}>
+            <SelectElement
+              label="Procedencia"
+              name="origin"
+              options={[
+                {
+                  id: '1',
+                  label: 'Casa'
+                },
+                {
+                  id: '2',
+                  label: 'Vecino'
+                },
+                {
+                  id: '3',
+                  label: 'Familiar'
+                },
+                {
+                  id: '4',
+                  label: 'Comedor popular'
+                },
+                {
+                  id: '5',
+                  label: 'Ambulante'
+                },
+                {
+                  id: '6',
+                  label: 'Kiosko'
+                },
+                {
+                  id: '7',
+                  label: 'Tienda/super'
+                },
+                {
+                  id: '77',
+                  label: 'Otro'
+                },
+                {
+                  id: '99',
+                  label: 'No sabe'
+                }
+              ]}
+              fullWidth
+            />
+          </Grid>     
+          <Grid size={6}>
+            <SelectElement
+              label="Fuente"
+              name="source"
+              options={[
+                {
+                  id: '1',
+                  label: 'Peso directo'
+                },
+                {
+                  id: '2',
+                  label: 'Medida casera'
+                },
+                {
+                  id: '3',
+                  label: 'P. c/agua'
+                },
+                {
+                  id: '4',
+                  label: 'Foto atlas'
+                },
+                {
+                  id: '5',
+                  label: 'Modelo'
+                },
+              ]}
+              fullWidth
             />
           </Grid>
           <Grid size={12}>
