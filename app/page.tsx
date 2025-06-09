@@ -62,15 +62,6 @@ export default function Home() {
           <Grid size={6}>
             <TextFieldElement
               fullWidth
-              name="interviewNumber"
-              label="Número de entrevista"
-              required
-              disabled
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextFieldElement
-              fullWidth
               name="code"
               label="Código"
               placeholder="0123456"
@@ -92,6 +83,18 @@ export default function Home() {
               name="lastName"
               label="Apellido"
               required
+            />
+          </Grid>
+          <Grid size={12}>
+            <Typography variant="h5">Datos Generales de entrevista</Typography>
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="interviewNumber"
+              label="Número de entrevista"
+              required
+              disabled
             />
           </Grid>
           <Grid size={6}>
@@ -175,6 +178,13 @@ export default function Home() {
                 },
               ]}
               fullWidth
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="orderFood"
+              label="N° Orden de Alimento"
             />
           </Grid>
           <Grid size={6}>
@@ -274,6 +284,37 @@ export default function Home() {
             />
           </Grid>
           <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="portionServed"
+              label="Porción servida (medida casera)"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="weightInGrams"
+              label="Peso en gramos"
+              required
+              type="number"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="portionResidue"
+              label="Residuo porción"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="weigthInGramsResidue"
+              label="Peso en gramos del residuo de porción"
+              type="number"
+            />
+          </Grid>
+          <Grid size={6}>
             <SelectElement
               label="Fuente"
               name="source"
@@ -300,15 +341,6 @@ export default function Home() {
                 },
               ]}
               fullWidth
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextFieldElement
-              fullWidth
-              name="weightInGrams"
-              label="Peso en gramos"
-              required
-              type="number"
             />
           </Grid>
           <Grid size={12}>+ alimento alimento (autocomplete) gramos</Grid>
