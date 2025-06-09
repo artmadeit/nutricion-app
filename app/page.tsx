@@ -55,7 +55,11 @@ export default function Home() {
       >
         <Grid container spacing={2} margin={4}>
           <Grid size={12}>
-            <Typography variant="h5" gutterBottom>
+            <Typography
+              variant="h5"
+              gutterBottom
+              style={{ paddingTop: "20px" }}
+            >
               Datos generales de persona
             </Typography>
           </Grid>
@@ -86,7 +90,13 @@ export default function Home() {
             />
           </Grid>
           <Grid size={12}>
-            <Typography variant="h5">Datos Generales de entrevista</Typography>
+            <Typography
+              variant="h5"
+              gutterBottom
+              style={{ paddingTop: "20px" }}
+            >
+              Datos generales de entrevista
+            </Typography>
           </Grid>
           <Grid size={6}>
             <TextFieldElement
@@ -179,6 +189,15 @@ export default function Home() {
               ]}
               fullWidth
             />
+          </Grid>
+          <Grid size={12}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              style={{ paddingTop: "20px" }}
+            >
+              Datos generales de consumo de alimentos
+            </Typography>
           </Grid>
           <Grid size={6}>
             <TextFieldElement
