@@ -1,30 +1,45 @@
 "use client";
 
-import Button from '@mui/material/Button';
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Grid, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import { DatePicker, renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
+import { useMask } from '@react-input/mask';
 import {
   FormContainer,
   SelectElement,
   TextFieldElement,
   useForm
 } from "react-hook-form-mui";
-import { DatePicker, renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
-import { Grid, Typography } from '@mui/material';
+import { z } from "zod";
 
 const schema = z.object({
-  firstName: z.string().trim().min(1),
-  lastName: z.string().trim().min(1),
+  firstName: z.string().trim(),
+  lastName: z.string().trim(),
   interviewDate: z.date(),
   interviewTime: z.date(),
   mealtime: z.string(), // TODO: use enum,
-  origin: z.string() // TODO: use enum,
+  origin: z.string(), // TODO: use enum,
+  interviewNumber: z.string(),
+  code: z.string(),
+  weightInGrams: z.number()
+    .min(0.1)
+    .max(999.9)
+    .refine(
+      (val) => Number.isInteger(val * 10),
+      { message: "Debe tener exactamente un decimal" }
+    )
 });
 
 export default function Home() {
   const formContext = useForm({
+    defaultValues: {
+      interviewNumber: '001'
+    },
     resolver: zodResolver(schema),
   });
+
+  const codeRef = useMask({ mask: '______', replacement: { _: /\d/ } });
 
   return (
     <div>
@@ -37,7 +52,25 @@ export default function Home() {
               Datos generales de persona
             </Typography>
           </Grid>
-
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="interviewNumber"
+              label="Número de entrevista"
+              required
+              disabled
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="code"
+              label="Código"
+              placeholder="0123456"
+              required
+              inputRef={codeRef}
+            />
+          </Grid>
           <Grid size={6}>
             <TextFieldElement
               fullWidth
@@ -151,7 +184,7 @@ export default function Home() {
                 },
                 {
                   id: '77',
-                  label: 'Otro'
+                  label: 'Otro' // TODO: add observation field
                 },
                 {
                   id: '99',
@@ -188,6 +221,15 @@ export default function Home() {
                 },
               ]}
               fullWidth
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="weightInGrams"
+              label="Peso en gramos"
+              required
+              type="number"
             />
           </Grid>
           <Grid size={12}>
