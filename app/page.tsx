@@ -1,15 +1,19 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Grid, Typography } from '@mui/material';
-import Button from '@mui/material/Button';
-import { DatePicker, renderTimeViewClock, TimePicker } from "@mui/x-date-pickers";
-import { useMask } from '@react-input/mask';
+import { Grid, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import {
+  DatePicker,
+  renderTimeViewClock,
+  TimePicker,
+} from "@mui/x-date-pickers";
+import { useMask } from "@react-input/mask";
 import {
   FormContainer,
   SelectElement,
   TextFieldElement,
-  useForm
+  useForm,
 } from "react-hook-form-mui";
 import { z } from "zod";
 
@@ -22,30 +26,33 @@ const schema = z.object({
   origin: z.string(), // TODO: use enum,
   interviewNumber: z.string(),
   code: z.string(),
-  weightInGrams: z.number()
+  weightInGrams: z
+    .number()
     .min(0.1)
     .max(999.9)
-    .refine(
-      (val) => Number.isInteger(val * 10),
-      { message: "Debe tener exactamente un decimal" }
-    )
+    .refine((val) => Number.isInteger(val * 10), {
+      message: "Debe tener exactamente un decimal",
+    }),
 });
 
 export default function Home() {
   const formContext = useForm({
     defaultValues: {
-      interviewNumber: '001'
+      interviewNumber: "001",
     },
     resolver: zodResolver(schema),
   });
 
-  const codeRef = useMask({ mask: '______', replacement: { _: /\d/ } });
+  const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
 
   return (
     <div>
-      <FormContainer formContext={formContext} onSuccess={(values) => {
-        console.log(values)
-      }}>
+      <FormContainer
+        formContext={formContext}
+        onSuccess={(values) => {
+          console.log(values);
+        }}
+      >
         <Grid container spacing={2} margin={4}>
           <Grid size={12}>
             <Typography variant="h5" gutterBottom>
@@ -91,7 +98,7 @@ export default function Home() {
             <DatePicker
               sx={{ width: "100%" }}
               value={formContext.getValues().interviewDate}
-              label="Fecha de entrevista"
+              label="Fecha de encuesta"
               onChange={(value: Date | null) => {
                 if (value !== null) {
                   formContext.setValue("interviewDate", value);
@@ -118,33 +125,105 @@ export default function Home() {
           </Grid>
           <Grid size={6}>
             <SelectElement
+              label="N° R24H"
+              name=""
+              options={[
+                {
+                  id: "1",
+                  label: "Primero",
+                },
+                {
+                  id: "2",
+                  label: "Segundo",
+                },
+              ]}
+              fullWidth
+            />
+          </Grid>
+          <Grid size={6}>
+            <SelectElement
+              label="Día"
+              name="day"
+              options={[
+                {
+                  id: "1",
+                  label: "Lunes",
+                },
+                {
+                  id: "2",
+                  label: "Martes",
+                },
+                {
+                  id: "3",
+                  label: "Miércoles",
+                },
+                {
+                  id: "4",
+                  label: "Jueves",
+                },
+                {
+                  id: "5",
+                  label: "Viernes",
+                },
+                {
+                  id: "6",
+                  label: "Sábado",
+                },
+                {
+                  id: "7",
+                  label: "Domingo",
+                },
+              ]}
+              fullWidth
+            />
+          </Grid>
+          <Grid size={6}>
+            <TimePicker
+              label="Hora de consumo"
+              ampm
+              sx={{ width: "100%" }}
+              value={formContext.getValues().interviewTime}
+              onChange={(value) => {
+                if (value !== null) {
+                  formContext.setValue("interviewTime", value);
+                }
+              }}
+              viewRenderers={{
+                hours: renderTimeViewClock,
+                minutes: renderTimeViewClock,
+                seconds: renderTimeViewClock,
+              }}
+            />
+          </Grid>
+          <Grid size={6}>
+            <SelectElement
               label="Tiempo de comida"
               name="mealtime"
               options={[
                 {
-                  id: '1',
-                  label: 'Desayuno'
+                  id: "1",
+                  label: "Desayuno",
                 },
                 {
-                  id: '2',
-                  label: 'M. mañana'
+                  id: "2",
+                  label: "M. mañana",
                 },
                 {
-                  id: '3',
-                  label: 'Almuerzo'
+                  id: "3",
+                  label: "Almuerzo",
                 },
                 {
-                  id: '4',
-                  label: 'M. tarde'
+                  id: "4",
+                  label: "M. tarde",
                 },
                 {
-                  id: '5',
-                  label: 'Cena'
+                  id: "5",
+                  label: "Cena",
                 },
                 {
-                  id: '6',
-                  label: 'M. noche'
-                }
+                  id: "6",
+                  label: "M. noche",
+                },
               ]}
               fullWidth
             />
@@ -155,69 +234,69 @@ export default function Home() {
               name="origin"
               options={[
                 {
-                  id: '1',
-                  label: 'Casa'
+                  id: "1",
+                  label: "Casa",
                 },
                 {
-                  id: '2',
-                  label: 'Vecino'
+                  id: "2",
+                  label: "Vecino",
                 },
                 {
-                  id: '3',
-                  label: 'Familiar'
+                  id: "3",
+                  label: "Familiar",
                 },
                 {
-                  id: '4',
-                  label: 'Comedor popular'
+                  id: "4",
+                  label: "Comedor popular",
                 },
                 {
-                  id: '5',
-                  label: 'Ambulante'
+                  id: "5",
+                  label: "Ambulante",
                 },
                 {
-                  id: '6',
-                  label: 'Kiosko'
+                  id: "6",
+                  label: "Kiosko",
                 },
                 {
-                  id: '7',
-                  label: 'Tienda/super'
+                  id: "7",
+                  label: "Tienda/super",
                 },
                 {
-                  id: '77',
-                  label: 'Otro' // TODO: add observation field
+                  id: "77",
+                  label: "Otro", // TODO: add observation field
                 },
                 {
-                  id: '99',
-                  label: 'No sabe'
-                }
+                  id: "99",
+                  label: "No sabe",
+                },
               ]}
               fullWidth
             />
-          </Grid>     
+          </Grid>
           <Grid size={6}>
             <SelectElement
               label="Fuente"
               name="source"
               options={[
                 {
-                  id: '1',
-                  label: 'Peso directo'
+                  id: "1",
+                  label: "Peso directo",
                 },
                 {
-                  id: '2',
-                  label: 'Medida casera'
+                  id: "2",
+                  label: "Medida casera",
                 },
                 {
-                  id: '3',
-                  label: 'P. c/agua'
+                  id: "3",
+                  label: "P. c/agua",
                 },
                 {
-                  id: '4',
-                  label: 'Foto atlas'
+                  id: "4",
+                  label: "Foto atlas",
                 },
                 {
-                  id: '5',
-                  label: 'Modelo'
+                  id: "5",
+                  label: "Modelo",
                 },
               ]}
               fullWidth
@@ -232,13 +311,7 @@ export default function Home() {
               type="number"
             />
           </Grid>
-          <Grid size={12}>
-            + alimento
-
-            alimento (autocomplete)
-            gramos
-
-          </Grid>
+          <Grid size={12}>+ alimento alimento (autocomplete) gramos</Grid>
           <Grid size={12}>
             <Button type="submit" variant="contained">
               Guardar
