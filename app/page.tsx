@@ -304,6 +304,30 @@ export default function Home() {
           </Grid>
           <Grid size={6}>
             <TextFieldElement
+              //TODO
+              fullWidth
+              name="preparation"
+              label="Preparación"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              //TODO
+              fullWidth
+              name="foodIngredients"
+              label="Ingrediente del nombre de Alimento"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              //TODO
+              fullWidth
+              name="foodTableCode"
+              label="Código alimento tabla"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
               fullWidth
               name="portionServed"
               label="Porción servida (medida casera)"
@@ -331,6 +355,14 @@ export default function Home() {
               name="weigthInGramsResidue"
               label="Peso en gramos del residuo de porción"
               type="number"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              //TODO
+              fullWidth
+              name="quantityConsumed"
+              label="Cantidad consumida"
             />
           </Grid>
           <Grid size={6}>
