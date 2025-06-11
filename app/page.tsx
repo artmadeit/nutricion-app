@@ -311,11 +311,22 @@ export default function Home() {
             />
           </Grid>
           <Grid size={6}>
+            {/* <Autocomplete
+              disablePortal
+              options={top100Films}
+              sx={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Ingrediente (nombre del Alimento)"
+                />
+              )}
+            /> */}
             <TextFieldElement
-              //TODO
+              //TODO  
               fullWidth
               name="foodIngredients"
-              label="Ingrediente del nombre de Alimento"
+              label="Ingrediente (nombre del Alimento)"
             />
           </Grid>
           <Grid size={6}>

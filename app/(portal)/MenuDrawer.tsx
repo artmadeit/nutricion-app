@@ -2,24 +2,36 @@ import * as React from "react";
 import {
   AppBar,
   Box,
+  Button,
   CssBaseline,
   IconButton,
+  ListItemIcon,
   Menu,
   MenuItem,
   Toolbar,
   Typography,
 } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
+import { AccountCircle } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
 export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [anchorEl, SetAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
   const handleClose = () => {
-    SetAnchorEl(null);
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    setAnchorEl(null);
   };
 
   const handleDrawerOpen = () => {
@@ -42,16 +54,28 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
           </IconButton>
           <div>
             <Typography variant="h6" noWrap component="div">
-              Farmacia
+              nutricion app
             </Typography>
-            <div></div>
+            <Button
+              variant="text"
+              color="inherit"
+              startIcon={<AccountCircle />}
+              onClick={handleClick}
+            >
+              Arthur
+            </Button>
             <Menu
               id="basic-menu"
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
             >
-              <MenuItem>Cerrar Sesión</MenuItem>
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+                Cerrar Sesión
+              </MenuItem>
             </Menu>
           </div>
         </Toolbar>
