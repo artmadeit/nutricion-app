@@ -4,6 +4,8 @@ import {
   Box,
   Button,
   CssBaseline,
+  Divider,
+  Drawer,
   IconButton,
   ListItemIcon,
   Menu,
@@ -14,6 +16,7 @@ import {
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AccountCircle } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
 
 const drawerWidth = 240;
 
@@ -37,6 +40,15 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
   const handleDrawerOpen = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const DrawerHeader = styled("div")(({ theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: "flex-end",
+  }));
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -86,8 +98,43 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
           </div>
         </Toolbar>
       </AppBar>
-      <Box>
-        Drawer
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerOpen}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {/* {drawer} */}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+          open
+        >
+          <DrawerHeader />
+          <Divider />
+          {/* {drawer} */}
+        </Drawer>
       </Box>
       <Box
         component="main"
