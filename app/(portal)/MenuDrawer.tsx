@@ -39,9 +39,15 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
   };
 
   return (
-    <Box>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar>
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100%- ${drawerWidth})px` },
+          ml: { sm: `${drawerWidth}px` },
+        }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -80,6 +86,9 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
           </div>
         </Toolbar>
       </AppBar>
+      <Box>
+        Drawer
+      </Box>
       <Box
         component="main"
         sx={{
