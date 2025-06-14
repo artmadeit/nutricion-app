@@ -16,6 +16,8 @@ import {
   useForm,
 } from "react-hook-form-mui";
 import { z } from "zod";
+import { format } from "date-fns/format";
+import { es } from 'date-fns/locale'
 
 const schema = z.object({
   firstName: z.string().trim(),
@@ -39,9 +41,14 @@ export default function Home() {
   const formContext = useForm({
     defaultValues: {
       interviewNumber: "001",
+      interviewDate: new Date(),
     },
     resolver: zodResolver(schema),
   });
+
+  
+  const interviewDate = formContext.watch("interviewDate");
+  const day = interviewDate ? format(interviewDate, "eeee", { locale: es }) : "";
 
   const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
 
@@ -110,29 +117,12 @@ export default function Home() {
           <Grid size={6}>
             <DatePicker
               sx={{ width: "100%" }}
-              value={formContext.getValues().interviewDate}
+              value={interviewDate}
               label="Fecha de encuesta"
               onChange={(value: Date | null) => {
                 if (value !== null) {
                   formContext.setValue("interviewDate", value);
                 }
-              }}
-            />
-          </Grid>
-          <Grid size={6}>
-            <TimePicker
-              ampm
-              sx={{ width: "100%" }}
-              value={formContext.getValues().interviewTime}
-              onChange={(value) => {
-                if (value !== null) {
-                  formContext.setValue("interviewTime", value);
-                }
-              }}
-              viewRenderers={{
-                hours: renderTimeViewClock,
-                minutes: renderTimeViewClock,
-                seconds: renderTimeViewClock,
               }}
             />
           </Grid>
@@ -154,41 +144,7 @@ export default function Home() {
             />
           </Grid>
           <Grid size={6}>
-            <SelectElement
-              label="Día"
-              name="day"
-              options={[
-                {
-                  id: "1",
-                  label: "Lunes",
-                },
-                {
-                  id: "2",
-                  label: "Martes",
-                },
-                {
-                  id: "3",
-                  label: "Miércoles",
-                },
-                {
-                  id: "4",
-                  label: "Jueves",
-                },
-                {
-                  id: "5",
-                  label: "Viernes",
-                },
-                {
-                  id: "6",
-                  label: "Sábado",
-                },
-                {
-                  id: "7",
-                  label: "Domingo",
-                },
-              ]}
-              fullWidth
-            />
+            Día: {day}
           </Grid>
           <Grid size={12}>
             <Typography
