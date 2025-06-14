@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Grid, Typography } from "@mui/material";
+import { Grid, TextField, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import {
   DatePicker,
@@ -35,6 +35,13 @@ const schema = z.object({
     .refine((val) => Number.isInteger(val * 10), {
       message: "Debe tener exactamente un decimal",
     }),
+  weigthInGramsResidue: z
+    .number()
+    .min(0.1)
+    .max(999.9)
+    .refine((val) => Number.isInteger(val * 10), {
+      message: "Debe tener exactamente un decimal",
+    }),
 });
 
 export default function Home() {
@@ -46,11 +53,15 @@ export default function Home() {
     resolver: zodResolver(schema),
   });
 
-  
+
   const interviewDate = formContext.watch("interviewDate");
   const day = interviewDate ? format(interviewDate, "eeee", { locale: es }) : "";
 
   const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
+
+  const weightInGrams = formContext.watch("weightInGrams");
+  const weigthInGramsResidue = formContext.watch("weigthInGramsResidue");
+  const quantityConsumed = (weightInGrams - weigthInGramsResidue).toFixed(1) || 0;
 
   return (
     <div>
@@ -70,7 +81,7 @@ export default function Home() {
               Datos generales de persona
             </Typography>
           </Grid>
-          <Grid size={6}>
+          <Grid size={12}>
             <TextFieldElement
               fullWidth
               name="code"
@@ -115,18 +126,7 @@ export default function Home() {
             />
           </Grid>
           <Grid size={6}>
-            <DatePicker
-              sx={{ width: "100%" }}
-              value={interviewDate}
-              label="Fecha de encuesta"
-              onChange={(value: Date | null) => {
-                if (value !== null) {
-                  formContext.setValue("interviewDate", value);
-                }
-              }}
-            />
-          </Grid>
-          <Grid size={6}>
+            {/* TODO: automatic */}
             <SelectElement
               label="N° R24H"
               name=""
@@ -143,8 +143,21 @@ export default function Home() {
               fullWidth
             />
           </Grid>
+          
           <Grid size={6}>
-            Día: {day}
+            <DatePicker
+              sx={{ width: "100%" }}
+              value={interviewDate}
+              label="Fecha de encuesta"
+              onChange={(value: Date | null) => {
+                if (value !== null) {
+                  formContext.setValue("interviewDate", value);
+                }
+              }}
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextField label="Día" variant="outlined" value={day} disabled fullWidth />
           </Grid>
           <Grid size={12}>
             <Typography
@@ -156,6 +169,7 @@ export default function Home() {
             </Typography>
           </Grid>
           <Grid size={6}>
+            {/* TODO: automatic */}
             <TextFieldElement
               fullWidth
               name="orderFood"
@@ -304,7 +318,7 @@ export default function Home() {
             <TextFieldElement
               fullWidth
               name="weightInGrams"
-              label="Peso en gramos"
+              label="Peso en gramos de la porción servida"
               required
               type="number"
             />
@@ -325,12 +339,12 @@ export default function Home() {
             />
           </Grid>
           <Grid size={6}>
-            <TextFieldElement
-              //TODO
-              fullWidth
-              name="quantityConsumed"
+            <TextField
               label="Cantidad consumida"
-            />
+              variant="outlined"
+              value={quantityConsumed}
+              disabled
+              fullWidth />
           </Grid>
           <Grid size={6}>
             <SelectElement
@@ -361,7 +375,6 @@ export default function Home() {
               fullWidth
             />
           </Grid>
-          <Grid size={12}>+ alimento alimento (autocomplete) gramos</Grid>
           <Grid size={12}>
             <Button type="submit" variant="contained">
               Guardar
