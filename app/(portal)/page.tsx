@@ -23,8 +23,7 @@ const schema = z.object({
   firstName: z.string().trim(),
   lastName: z.string().trim(),
   interviewDate: z.date(),
-  interviewTime: z.date(),
-  mealtime: z.string(), // TODO: use enum,
+  consumptionTime: z.date(),
   origin: z.string(), // TODO: use enum,
   interviewNumber: z.string(),
   code: z.string(),
@@ -44,11 +43,67 @@ const schema = z.object({
     }),
 });
 
+const mealtimeOptions = [
+  {
+    id: "1",
+    label: "Desayuno",
+    startHour: 5,
+    endHour: 10
+  },
+  {
+    id: "2",
+    label: "M. mañana",
+    startHour: 10,
+    endHour: 12
+  },
+  {
+    id: "3",
+    label: "Almuerzo",
+    startHour: 12,
+    endHour: 15
+  },
+  {
+    id: "4",
+    label: "M. tarde",
+    startHour: 15,
+    endHour: 18
+  },
+  {
+    id: "5",
+    label: "Cena",
+    startHour: 18,
+    endHour: 22
+  },
+  {
+    id: "6",
+    label: "M. noche",
+    startHour: 22,
+    endHour: 5
+  }
+]
+
+const mealtime = (consumptionTime: Date) => {
+  if (!consumptionTime) return mealtimeOptions[0].label;
+  
+  const hour = consumptionTime.getHours();
+  
+  const mealTime = mealtimeOptions.find(option => {
+    if (option.startHour > option.endHour) {
+      // Handle overnight case (M. noche)
+      return hour >= option.startHour || hour < option.endHour;
+    }
+    return hour >= option.startHour && hour < option.endHour;
+  });
+
+  return mealTime?.label || mealtimeOptions[0].label;
+}
+
 export default function Home() {
   const formContext = useForm({
     defaultValues: {
       interviewNumber: "001",
       interviewDate: new Date(),
+      consumptionTime: new Date()
     },
     resolver: zodResolver(schema),
   });
@@ -62,6 +117,8 @@ export default function Home() {
   const weightInGrams = formContext.watch("weightInGrams");
   const weigthInGramsResidue = formContext.watch("weigthInGramsResidue");
   const quantityConsumed = (weightInGrams - weigthInGramsResidue || 0).toFixed(1);
+
+  const consumptionTime = formContext.watch("consumptionTime");
 
   return (
     <div>
@@ -143,7 +200,7 @@ export default function Home() {
               fullWidth
             />
           </Grid>
-          
+
           <Grid size={6}>
             <DatePicker
               sx={{ width: "100%" }}
@@ -181,10 +238,10 @@ export default function Home() {
               label="Hora de consumo"
               ampm
               sx={{ width: "100%" }}
-              value={formContext.getValues().interviewTime}
+              value={consumptionTime}
               onChange={(value) => {
                 if (value !== null) {
-                  formContext.setValue("interviewTime", value);
+                  formContext.setValue("consumptionTime", value);
                 }
               }}
               viewRenderers={{
@@ -195,37 +252,12 @@ export default function Home() {
             />
           </Grid>
           <Grid size={6}>
-            <SelectElement
+            <TextField
               label="Tiempo de comida"
-              name="mealtime"
-              options={[
-                {
-                  id: "1",
-                  label: "Desayuno",
-                },
-                {
-                  id: "2",
-                  label: "M. mañana",
-                },
-                {
-                  id: "3",
-                  label: "Almuerzo",
-                },
-                {
-                  id: "4",
-                  label: "M. tarde",
-                },
-                {
-                  id: "5",
-                  label: "Cena",
-                },
-                {
-                  id: "6",
-                  label: "M. noche",
-                },
-              ]}
-              fullWidth
-            />
+              variant="outlined"
+              value={mealtime(consumptionTime)}
+              disabled
+              fullWidth />
           </Grid>
           <Grid size={6}>
             <SelectElement
