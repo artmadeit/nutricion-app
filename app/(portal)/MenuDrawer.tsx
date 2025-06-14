@@ -7,7 +7,11 @@ import {
   Divider,
   Drawer,
   IconButton,
+  List,
+  ListItem,
+  ListItemButton,
   ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Toolbar,
@@ -49,6 +53,19 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
+
+  const drawer = (
+    <List>
+      <ListItem>
+        <ListItemButton>
+          <ListItemIcon>
+            <span className="material-symbols-outlined">patient_list</span>
+          </ListItemIcon>
+          <ListItemText primary="Pacientes"/>
+        </ListItemButton>
+      </ListItem>
+    </List>
+  )
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -118,7 +135,7 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
             },
           }}
         >
-          {/* {drawer} */}
+          {drawer}
         </Drawer>
         <Drawer
           variant="permanent"
@@ -133,7 +150,7 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
         >
           <DrawerHeader />
           <Divider />
-          {/* {drawer} */}
+          {drawer}
         </Drawer>
       </Box>
       <Box
