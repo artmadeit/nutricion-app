@@ -61,7 +61,7 @@ export default function Home() {
 
   const weightInGrams = formContext.watch("weightInGrams");
   const weigthInGramsResidue = formContext.watch("weigthInGramsResidue");
-  const quantityConsumed = (weightInGrams - weigthInGramsResidue).toFixed(1) || 0;
+  const quantityConsumed = (weightInGrams - weigthInGramsResidue || 0).toFixed(1);
 
   return (
     <div>

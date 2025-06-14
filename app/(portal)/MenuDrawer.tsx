@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import {
   AppBar,
@@ -21,6 +23,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AccountCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const drawerWidth = 240;
 
@@ -59,9 +62,9 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
       <ListItem>
         <ListItemButton>
           <ListItemIcon>
-            <span className="material-symbols-outlined">patient_list</span>
+            <AccountCircleIcon />
           </ListItemIcon>
-          <ListItemText primary="Pacientes"/>
+          <ListItemText primary="Entrevistados"/>
         </ListItemButton>
       </ListItem>
     </List>
