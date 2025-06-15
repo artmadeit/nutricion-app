@@ -13,6 +13,7 @@ import {
 import { useMask } from "@react-input/mask";
 import { format } from "date-fns/format";
 import { es } from 'date-fns/locale';
+import React from "react";
 import {
   FormContainer,
   SelectElement,
@@ -31,20 +32,23 @@ const schema = z.object({
   foods: z.array(z.object({
     origin: z.string(), // TODO: use enum,
     consumptionTime: z.date(),
-    weightInGrams: z
-      .number()
-      .min(0.1)
-      .max(999.9)
-      .refine((val) => Number.isInteger(val * 10), {
-        message: "Debe tener exactamente un decimal",
-      }),
-    weigthInGramsResidue: z
-      .number()
-      .min(0.0)
-      .max(999.9)
-      .refine((val) => Number.isInteger(val * 10), {
-        message: "Debe tener exactamente un decimal",
-      }),
+    ingredients: z.array(z.object({
+
+      weightInGrams: z
+        .number()
+        .min(0.1)
+        .max(999.9)
+        .refine((val) => Number.isInteger(val * 10), {
+          message: "Debe tener exactamente un decimal",
+        }),
+      weigthInGramsResidue: z
+        .number()
+        .min(0.0)
+        .max(999.9)
+        .refine((val) => Number.isInteger(val * 10), {
+          message: "Debe tener exactamente un decimal",
+        }),
+    }))
   }))
 });
 
@@ -103,11 +107,17 @@ const mealtime = (consumptionTime: Date) => {
   return mealTime?.label || mealtimeOptions[0].label;
 }
 
+const emptyIngredient = {
+  weightInGrams: 0,
+  weigthInGramsResidue: 0
+}
+
 const emptyFood = {
   consumptionTime: new Date(2000, 0, 1, 12, 0, 0),
   origin: "",
-  weightInGrams: 0,
-  weigthInGramsResidue: 0
+  ingredients: [
+    { ...emptyIngredient }
+  ]
 }
 
 export default function Home() {
@@ -131,6 +141,16 @@ export default function Home() {
   const day = interviewDate ? format(interviewDate, "eeee", { locale: es }) : "";
 
   const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
+
+  const handleAddIngredient = (foodIndex: number) => {
+    const currentIngredients = formContext.getValues(`foods.${foodIndex}.ingredients`) || [];
+    formContext.setValue(`foods.${foodIndex}.ingredients`, [
+      ...currentIngredients,
+      {
+        ...emptyIngredient
+      }
+    ]);
+  };
 
   return (
     <div>
@@ -240,8 +260,7 @@ export default function Home() {
           {
             foodFields.map((field, foodIndex) => {
               const food = formContext.watch(`foods.${foodIndex}`);
-              const { weightInGrams, weigthInGramsResidue, consumptionTime } = food;
-              const quantityConsumed = (weightInGrams - weigthInGramsResidue).toFixed(1);
+              const { consumptionTime, ingredients } = food;
 
               return (
                 <Grid container key={foodIndex}>
@@ -352,25 +371,32 @@ export default function Home() {
                         Ingredientes
                       </Typography>
                     </Grid>
-                    <Grid size={2}>
-                      {/* TODO: automatic */}
-                      <TextFieldElement
-                        fullWidth
-                        name={`foods.${foodIndex}.orderFood`}
-                        label="N° Orden de Alimento"
-                      />
-                    </Grid>
-                    <Grid size={4}>
-                      <TextFieldElement
-                        fullWidth
-                        name={`foods.${foodIndex}.foodTableCode`}
-                        label="Código alimento tabla"
-                        disabled
-                      //TODO: automatic
-                      />
-                    </Grid>
-                    <Grid size={6}>
-                      {/* <Autocomplete
+                    {
+                      ingredients.map((ingredient, ingredientIndex) => {
+                        const { weightInGrams, weigthInGramsResidue } = ingredient;
+                        const quantityConsumed = (weightInGrams - weigthInGramsResidue).toFixed(1);
+
+                        return (
+                          <React.Fragment key={ingredientIndex}>
+                            <Grid size={2}>
+                              <TextField
+                                variant="outlined"
+                                label="N° Orden de Alimento"
+                                value={ingredientIndex + 1}
+                                disabled
+                                fullWidth />
+                            </Grid>
+                            <Grid size={4}>
+                              <TextFieldElement
+                                fullWidth
+                                name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodTableCode`}
+                                label="Código alimento tabla"
+                                disabled
+                              //TODO: automatic
+                              />
+                            </Grid>
+                            <Grid size={6}>
+                              {/* <Autocomplete
                   disablePortal
                   options={top100Films}
                   sx={{ width: 300 }}
@@ -381,95 +407,104 @@ export default function Home() {
                     />
                   )}
                 /> */}
-                      <TextFieldElement
-                        //TODO
-                        fullWidth
-                        name={`foods.${foodIndex}.foodIngredients`}
-                        label="Ingrediente (nombre del Alimento)"
-                      />
-                    </Grid>
-                    <Grid size={6}>
-                      <TextFieldElement
-                        fullWidth
-                        name={`foods.${foodIndex}.portionServed`}
-                        label="Porción servida (medida casera)"
-                      />
-                    </Grid>
-                    <Grid size={6}>
-                      <TextFieldElement
-                        fullWidth
-                        name={`foods.${foodIndex}.weightInGrams`}
-                        label="Peso en gramos de la porción servida"
-                        required
-                        type="number"
-                      />
-                    </Grid>
-                    <Grid size={6}>
-                      <TextFieldElement
-                        fullWidth
-                        name={`foods.${foodIndex}.portionResidue`}
-                        label="Residuo porción"
-                      />
-                    </Grid>
-                    <Grid size={6}>
-                      <TextFieldElement
-                        fullWidth
-                        name={`foods.${foodIndex}.weigthInGramsResidue`}
-                        label="Peso en gramos del residuo de porción"
-                        type="number"
-                      />
-                    </Grid>
-                    <Grid size={6}>
-                      <TextField
-                        label="Cantidad consumida"
-                        variant="outlined"
-                        value={quantityConsumed}
-                        disabled
-                        fullWidth />
-                    </Grid>
-                    <Grid size={6}>
-                      <SelectElement
-                        label="Fuente"
-                        name={`foods.${foodIndex}.source`}
-                        options={[
-                          {
-                            id: "1",
-                            label: "Peso directo",
-                          },
-                          {
-                            id: "2",
-                            label: "Medida casera",
-                          },
-                          {
-                            id: "3",
-                            label: "P. c/agua",
-                          },
-                          {
-                            id: "4",
-                            label: "Foto atlas",
-                          },
-                          {
-                            id: "5",
-                            label: "Modelo",
-                          },
-                          {
-                            id: "6",
-                            label: "Comida del colegio",
-                          },
-                        ]}
-                        fullWidth
-                      />
-                    </Grid>
+                              <TextFieldElement
+                                //TODO
+                                fullWidth
+                                name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodIngredients`}
+                                label="Ingrediente (nombre del Alimento)"
+                              />
+                            </Grid>
+                            <Grid size={6}>
+                              <TextFieldElement
+                                fullWidth
+                                name={`foods.${foodIndex}.ingredients.${ingredientIndex}.portionServed`}
+                                label="Porción servida (medida casera)"
+                              />
+                            </Grid>
+                            <Grid size={6}>
+                              <TextFieldElement
+                                fullWidth
+                                name={`foods.${foodIndex}.ingredients.${ingredientIndex}.weightInGrams`}
+                                label="Peso en gramos de la porción servida"
+                                required
+                                type="number"
+                              />
+                            </Grid>
+                            <Grid size={6}>
+                              <TextFieldElement
+                                fullWidth
+                                name={`foods.${foodIndex}.ingredients.${ingredientIndex}.portionResidue`}
+                                label="Residuo porción"
+                              />
+                            </Grid>
+                            <Grid size={6}>
+                              <TextFieldElement
+                                fullWidth
+                                name={`foods.${foodIndex}.ingredients.${ingredientIndex}.weigthInGramsResidue`}
+                                label="Peso en gramos del residuo de porción"
+                                type="number"
+                              />
+                            </Grid>
+                            <Grid size={6}>
+                              <TextField
+                                label="Cantidad consumida"
+                                variant="outlined"
+                                value={quantityConsumed}
+                                disabled
+                                fullWidth />
+                            </Grid>
+                            <Grid size={6}>
+                              <SelectElement
+                                label="Fuente"
+                                name={`foods.${foodIndex}.ingredients.${ingredientIndex}.source`}
+                                options={[
+                                  {
+                                    id: "1",
+                                    label: "Peso directo",
+                                  },
+                                  {
+                                    id: "2",
+                                    label: "Medida casera",
+                                  },
+                                  {
+                                    id: "3",
+                                    label: "P. c/agua",
+                                  },
+                                  {
+                                    id: "4",
+                                    label: "Foto atlas",
+                                  },
+                                  {
+                                    id: "5",
+                                    label: "Modelo",
+                                  },
+                                  {
+                                    id: "6",
+                                    label: "Comida del colegio",
+                                  },
+                                ]}
+                                fullWidth
+                              />
+                            </Grid>
+
+                          </React.Fragment>
+                        )
+                      })
+                    }
                     <Grid size={12}>
-                      <Button variant="outlined" startIcon={<AddIcon />} fullWidth>
+                      <Button
+                        variant="outlined"
+                        startIcon={<AddIcon />}
+                        fullWidth
+                        onClick={() => handleAddIngredient(foodIndex)}
+                      >
                         Agregar ingrediente
                       </Button>
                     </Grid>
                   </Grid>
                 </Grid>
               )
-            }
-            )
+            })
           }
 
           <Grid size={12}>
