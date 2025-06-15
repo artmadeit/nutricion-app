@@ -36,7 +36,7 @@ const schema = z.object({
     }),
   weigthInGramsResidue: z
     .number()
-    .min(0.1)
+    .min(0.0)
     .max(999.9)
     .refine((val) => Number.isInteger(val * 10), {
       message: "Debe tener exactamente un decimal",
@@ -306,10 +306,25 @@ export default function Home() {
           </Grid>
           <Grid size={6}>
             <TextFieldElement
-              //TODO
               fullWidth
-              name="preparation"
-              label="Preparación"
+              name="preparationCode"
+              label="Código de forma de preparación"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="preparationName"
+              label="Nombre de la preparación"
+            />
+          </Grid>
+          <Grid size={6}>
+            <TextFieldElement
+              fullWidth
+              name="foodTableCode"
+              label="Código alimento tabla"
+              disabled
+              //TODO: automatic
             />
           </Grid>
           <Grid size={6}>
@@ -333,14 +348,6 @@ export default function Home() {
           </Grid>
           <Grid size={6}>
             <TextFieldElement
-              //TODO
-              fullWidth
-              name="foodTableCode"
-              label="Código alimento tabla"
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextFieldElement
               fullWidth
               name="portionServed"
               label="Porción servida (medida casera)"
@@ -353,6 +360,7 @@ export default function Home() {
               label="Peso en gramos de la porción servida"
               required
               type="number"
+              
             />
           </Grid>
           <Grid size={6}>
@@ -402,6 +410,10 @@ export default function Home() {
                 {
                   id: "5",
                   label: "Modelo",
+                },
+                {
+                  id: "6",
+                  label: "Comida del colegio",
                 },
               ]}
               fullWidth
