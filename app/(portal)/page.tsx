@@ -104,7 +104,7 @@ const mealtime = (consumptionTime: Date) => {
 }
 
 const emptyFood = {
-  consumptionTime: new Date(),
+  consumptionTime: new Date(2000, 0, 1, 12, 0, 0),
   origin: "",
   weightInGrams: 0,
   weigthInGramsResidue: 0
@@ -122,12 +122,10 @@ export default function Home() {
     resolver: zodResolver(schema),
   });
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  const { fields: foodFields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control: formContext.control,
     name: "foods",
   });
-
-
 
   const interviewDate = formContext.watch("interviewDate");
   const day = interviewDate ? format(interviewDate, "eeee", { locale: es }) : "";
@@ -240,35 +238,34 @@ export default function Home() {
             </Typography>
           </Grid>
           {
-            fields.map((field, index) => {
-              const weightInGrams = formContext.watch(`foods.${index}.weightInGrams`);
-              const weigthInGramsResidue = formContext.watch(`foods.${index}.weigthInGramsResidue`);
-              const quantityConsumed = (weightInGrams - weigthInGramsResidue || 0).toFixed(1);
-              const consumptionTime = formContext.watch(`foods.${index}.consumptionTime`);
+            foodFields.map((field, foodIndex) => {
+              const food = formContext.watch(`foods.${foodIndex}`);
+              const { weightInGrams, weigthInGramsResidue, consumptionTime } = food;
+              const quantityConsumed = (weightInGrams - weigthInGramsResidue).toFixed(1);
 
               return (
-                <Grid container key={index}>
+                <Grid container key={foodIndex}>
                   <Grid size={5}>
                     <TextFieldElement
                       fullWidth
-                      name={`food.${index}.preparationCode`}
+                      name={`foods.${foodIndex}.preparationCode`}
                       label="Código de forma de preparación"
                     />
                   </Grid>
                   <Grid size={6}>
                     <TextFieldElement
                       fullWidth
-                      name={`food.${index}.preparationName`}
+                      name={`foods.${foodIndex}.preparationName`}
                       label="Nombre de la preparación"
                     />
                   </Grid>
                   <Grid size={1} sx={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
                     {
-                      fields.length > 1 &&
+                      foodFields.length > 1 &&
                       <Tooltip title="Eliminar preparación">
                         <Fab
                           size="small"
-                          onClick={() => remove(index)}
+                          onClick={() => remove(foodIndex)}
                         >
                           <DeleteIcon />
                         </Fab>
@@ -282,7 +279,7 @@ export default function Home() {
                       value={consumptionTime}
                       onChange={(value) => {
                         if (value !== null) {
-                          formContext.setValue(`foods.${index}.consumptionTime`, value);
+                          formContext.setValue(`foods.${foodIndex}.consumptionTime`, value);
                         }
                       }}
                       viewRenderers={{
@@ -303,7 +300,7 @@ export default function Home() {
                   <Grid size={4}>
                     <SelectElement
                       label="Procedencia"
-                      name={`food.${index}.origin`}
+                      name={`foods.${foodIndex}.origin`}
                       options={[
                         {
                           id: "1",
@@ -359,14 +356,14 @@ export default function Home() {
                       {/* TODO: automatic */}
                       <TextFieldElement
                         fullWidth
-                        name={`food.${index}.orderFood`}
+                        name={`foods.${foodIndex}.orderFood`}
                         label="N° Orden de Alimento"
                       />
                     </Grid>
                     <Grid size={4}>
                       <TextFieldElement
                         fullWidth
-                        name={`food.${index}.foodTableCode`}
+                        name={`foods.${foodIndex}.foodTableCode`}
                         label="Código alimento tabla"
                         disabled
                       //TODO: automatic
@@ -387,21 +384,21 @@ export default function Home() {
                       <TextFieldElement
                         //TODO
                         fullWidth
-                        name={`food.${index}.foodIngredients`}
+                        name={`foods.${foodIndex}.foodIngredients`}
                         label="Ingrediente (nombre del Alimento)"
                       />
                     </Grid>
                     <Grid size={6}>
                       <TextFieldElement
                         fullWidth
-                        name={`food.${index}.portionServed`}
+                        name={`foods.${foodIndex}.portionServed`}
                         label="Porción servida (medida casera)"
                       />
                     </Grid>
                     <Grid size={6}>
                       <TextFieldElement
                         fullWidth
-                        name={`food.${index}.weightInGrams`}
+                        name={`foods.${foodIndex}.weightInGrams`}
                         label="Peso en gramos de la porción servida"
                         required
                         type="number"
@@ -410,14 +407,14 @@ export default function Home() {
                     <Grid size={6}>
                       <TextFieldElement
                         fullWidth
-                        name={`food.${index}.portionResidue`}
+                        name={`foods.${foodIndex}.portionResidue`}
                         label="Residuo porción"
                       />
                     </Grid>
                     <Grid size={6}>
                       <TextFieldElement
                         fullWidth
-                        name={`food.${index}.weigthInGramsResidue`}
+                        name={`foods.${foodIndex}.weigthInGramsResidue`}
                         label="Peso en gramos del residuo de porción"
                         type="number"
                       />
@@ -433,7 +430,7 @@ export default function Home() {
                     <Grid size={6}>
                       <SelectElement
                         label="Fuente"
-                        name={`food.${index}.source`}
+                        name={`foods.${foodIndex}.source`}
                         options={[
                           {
                             id: "1",
