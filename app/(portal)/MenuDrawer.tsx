@@ -23,7 +23,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AccountCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Link from "next/link";
 
 const drawerWidth = 240;
 
@@ -59,16 +60,21 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
 
   const drawer = (
     <List>
-      <ListItem>
-        <ListItemButton>
-          <ListItemIcon>
-            <AccountCircleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Entrevistados"/>
-        </ListItemButton>
-      </ListItem>
+      <Link
+        href="/interviewed"
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <ListItem>
+          <ListItemButton>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Entrevistados" />
+          </ListItemButton>
+        </ListItem>
+      </Link>
     </List>
-  )
+  );
 
   return (
     <Box sx={{ display: "flex" }}>
