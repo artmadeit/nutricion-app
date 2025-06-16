@@ -164,8 +164,7 @@ export default function Home() {
           <Grid size={12}>
             <Typography
               variant="h5"
-              gutterBottom
-              style={{ paddingTop: "20px" }}
+              gutterBottom              
             >
               Datos generales de persona
             </Typography>
@@ -361,7 +360,7 @@ export default function Home() {
                       fullWidth
                     />
                   </Grid>
-                  <Grid container sx={{ paddingLeft: 4 }}>
+                  <Grid container>
                     <Grid size={12}>
                       <Typography
                         variant="h6"
