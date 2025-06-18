@@ -7,32 +7,49 @@ import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { useRouter } from "next/navigation";
 
-export default function ListInterviewed() {
-  // const router = useRouter();
+type Interviewed = {
+  id?: number;
+  code: number;
+};
 
-  // const columns = React.useMemo(
-  //   () =>
-  //     [
-  //       { field: "code", headerName: "código" },
-  //       {
-  //         field: "actions",
-  //         type: "actions",
-  //         width: 80,
-  //         getActions: () => {
-  //           return [
-  //             <Tooltip title="a" key="edit">
-  //               <GridActionsCellItem
-  //                 icon={<SearchIcon />}
-  //                 label="Ver"
-  //                 onClick={() => router.push("")}
-  //               />
-  //             </Tooltip>,
-  //           ];
-  //         },
-  //       },
-  //     ] as GridColDef<interviewType>[],
-  //   [router]
-  // );
+export default function ListInterviewed() {
+  const router = useRouter();
+
+  const [interview, setInterview] = React.useState({
+    _embedded: {
+      inter: [],
+    },
+    page: {
+      size: "",
+      totalElements: "",
+      totalPages: "",
+      number: "",
+    },
+  });
+
+  const columns = React.useMemo(
+    () =>
+      [
+        { field: "code", headerName: "código" },
+        {
+          field: "actions",
+          type: "actions",
+          width: 80,
+          getActions: () => {
+            return [
+              <Tooltip title="a" key="edit">
+                <GridActionsCellItem
+                  icon={<SearchIcon />}
+                  label="Ver"
+                  onClick={() => router.push("")}
+                />
+              </Tooltip>,
+            ];
+          },
+        },
+      ] as GridColDef<Interviewed>[],
+    [router]
+  );
 
   return (
     <Stack direction="column" spacing={2}>
@@ -43,10 +60,10 @@ export default function ListInterviewed() {
             <AddIcon />
           </Fab>
         </Tooltip>
-        <div>
-          <DataGrid columns={columns} rows={} />
-        </div>
       </Stack>
+      <div>
+        <DataGrid columns={columns} rows={interview._embedded.inter} />
+      </div>
     </Stack>
   );
 }
