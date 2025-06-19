@@ -6,16 +6,19 @@ import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { esES } from "@mui/x-data-grid/locales";
 
 type Interviewed = {
   id?: number;
   code: number;
+  name: string;
+  lastName: string;
 };
 
 export default function ListInterviewed() {
   const router = useRouter();
 
-  const [interview, ] = React.useState({
+  const [interview] = React.useState({
     _embedded: {
       inter: [],
     },
@@ -30,7 +33,9 @@ export default function ListInterviewed() {
   const columns = React.useMemo(
     () =>
       [
-        { field: "code", headerName: "código" },
+        { field: "code", headerName: "Código" },
+        { field: "name", headerName: "Nombre" },
+        { field: "lastName", headerName: "Apellido" },
         {
           field: "actions",
           type: "actions",
@@ -61,8 +66,12 @@ export default function ListInterviewed() {
           </Fab>
         </Tooltip>
       </Stack>
-      <div>
-        <DataGrid columns={columns} rows={interview._embedded.inter} />
+      <div style={{ height: "70vh" }}>
+        <DataGrid
+          columns={columns}
+          rows={interview._embedded.inter}
+          localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+        />
       </div>
     </Stack>
   );
