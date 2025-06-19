@@ -132,7 +132,7 @@ export default function Home() {
     resolver: zodResolver(schema),
   });
 
-  const { fields: foodFields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  const { fields: foodFields, append, remove } = useFieldArray({
     control: formContext.control,
     name: "foods",
   });

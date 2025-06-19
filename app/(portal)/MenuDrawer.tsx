@@ -28,7 +28,7 @@ import Link from "next/link";
 
 const drawerWidth = 240;
 
-export default function MenuDrawer({ children }: React.PropsWithChildren<{}>) {
+export default function MenuDrawer({ children }: React.PropsWithChildren<unknown>) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
