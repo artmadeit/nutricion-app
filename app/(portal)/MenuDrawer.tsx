@@ -61,7 +61,7 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<unknown
   const drawer = (
     <List>
       <Link
-        href="/interviewed"
+        href="/"
         style={{ textDecoration: "none", color: "inherit" }}
       >
         <ListItem>
