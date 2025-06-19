@@ -15,7 +15,7 @@ type Interviewed = {
 export default function ListInterviewed() {
   const router = useRouter();
 
-  const [interview, _setInterview] = React.useState({
+  const [interview, ] = React.useState({
     _embedded: {
       inter: [],
     },
