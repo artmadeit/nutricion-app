@@ -61,7 +61,7 @@ export default function ListInterviewed() {
     <Stack direction="column" spacing={2}>
       <Stack direction="row" alignItems="center" spacing={2}>
         <Typography variant="h4">Entrevistados</Typography>
-        <Link href="/interviewed">
+        <Link href="/interviewed/create">
           <Tooltip title="Crear">
             <Fab color="primary" aria-labelledby="add">
               <AddIcon />

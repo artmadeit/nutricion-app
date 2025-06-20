@@ -4,7 +4,7 @@ import { Grid, Typography } from "@mui/material";
 import { TextFieldElement } from "react-hook-form-mui";
 
 type GeneralDataProps = {
-  codeRef: any;
+  codeRef: React.RefObject<HTMLInputElement>;
 };
 
 export default function GeneralData({ codeRef }: GeneralDataProps) {
