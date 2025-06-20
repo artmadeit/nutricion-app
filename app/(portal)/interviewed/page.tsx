@@ -1,7 +1,10 @@
 "use client";
 
+import GeneralData from "@/app/(components)/GeneralData";
 import { Typography } from "@mui/material";
 import React from "react";
+import { useMask } from "@react-input/mask";
+import { FormContainer } from "react-hook-form-mui";
 
 // import { Fab, Stack, Tooltip, Typography } from "@mui/material";
 // import AddIcon from "@mui/icons-material/Add";
@@ -81,9 +84,14 @@ import React from "react";
 // }
 
 export default function Interviewed() {
+  const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
+
   return (
     <div>
       <Typography variant="h4">Registrar persona</Typography>
+      <FormContainer>
+        <GeneralData codeRef={codeRef} />
+      </FormContainer>
     </div>
   );
 }
