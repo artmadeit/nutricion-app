@@ -9,7 +9,7 @@ type GeneralDataProps = {
 
 export default function GeneralData({ codeRef }: GeneralDataProps) {
   return (
-    <Grid container spacing={2} margin={4}>
+    <>
       <Grid size={12}>
         <Typography variant="h5" gutterBottom>
           Datos generales de persona
@@ -31,6 +31,6 @@ export default function GeneralData({ codeRef }: GeneralDataProps) {
       <Grid size={6}>
         <TextFieldElement fullWidth name="lastName" label="Apellido" required />
       </Grid>
-    </Grid>
+    </>
   );
 }
