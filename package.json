@@ -19,12 +19,14 @@
     "@mui/x-data-grid": "^8.5.2",
     "@mui/x-date-pickers": "^7.29.4",
     "@react-input/mask": "^2.0.4",
+    "axios": "^1.10.0",
     "date-fns": "^3.0.0",
     "next": "15.3.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.57.0",
     "react-hook-form-mui": "^7.6.1",
+    "swr": "^2.3.3",
     "zod": "^3.25.56"
   },
   "devDependencies": {
