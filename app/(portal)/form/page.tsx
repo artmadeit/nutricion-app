@@ -1,5 +1,6 @@
 "use client";
 
+import GeneralData from "@/app/(components)/GeneralData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -145,7 +146,6 @@ export default function Home() {
     ? format(interviewDate, "eeee", { locale: es })
     : "";
 
-  const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
 
   const handleAddIngredient = (foodIndex: number) => {
     const currentIngredients =
@@ -167,37 +167,7 @@ export default function Home() {
         }}
       >
         <Grid container spacing={2} margin={4}>
-          <Grid size={12}>
-            <Typography variant="h5" gutterBottom>
-              Datos generales de persona
-            </Typography>
-          </Grid>
-          <Grid size={12}>
-            <TextFieldElement
-              fullWidth
-              name="code"
-              label="Código"
-              placeholder="0123456"
-              required
-              inputRef={codeRef}
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextFieldElement
-              fullWidth
-              name="firstName"
-              label="Nombre"
-              required
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextFieldElement
-              fullWidth
-              name="lastName"
-              label="Apellido"
-              required
-            />
-          </Grid>
+          <GeneralData />
           <Grid size={12}>
             <Typography
               variant="h5"
