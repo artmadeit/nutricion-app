@@ -45,7 +45,7 @@ export default function ListInterviewed() {
     () => (
       [
         { field: "code", headerName: "Código" },
-        { field: "name", headerName: "Nombre" },
+        { field: "firstName", headerName: "Nombre" },
         { field: "lastName", headerName: "Apellido" },
         {
           field: "actions",
@@ -90,7 +90,7 @@ export default function ListInterviewed() {
               paginationMode="server"
               onPaginationModelChange={setPaginationModel}
               disableColumnFilter
-              rows={people._embedded?.persons || []}
+              rows={people._embedded?.people || []}
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             /> : <Loading />
         }
