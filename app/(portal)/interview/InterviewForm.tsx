@@ -122,7 +122,7 @@ const emptyFood = {
   ingredients: [{ ...emptyIngredient }],
 };
 
-export default function Home() {
+export function InterviewForm() {
   const formContext = useForm({
     defaultValues: {
       interviewNumber: "001",

@@ -6,9 +6,10 @@ import { withOutSorting } from "@/app/(components)/helpers/withOutSorting";
 import Loading from "@/app/(components)/Loading";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
-import { Button, Fab, Grid, Link, Stack, Tooltip, Typography } from "@mui/material";
+import { Button, Fab, Grid, Stack, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { esES } from "@mui/x-data-grid/locales";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { FormContainer } from "react-hook-form-mui";
@@ -73,7 +74,7 @@ export function EditInterview({ id }: { id: number }) {
             <Stack direction="column" spacing={2}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Typography variant="h5">Entrevistas</Typography>
-                <Link href="/interview/create">
+                <Link href={`/interview/${id}?number=${interviews?.length + 1}`}>
                   <Tooltip title="Crear">
                     <Fab color="primary" aria-labelledby="add">
                       <AddIcon />
