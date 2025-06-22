@@ -1,13 +1,12 @@
 "use client";
 
 import { Grid, Typography } from "@mui/material";
+import { useMask } from "@react-input/mask";
 import { TextFieldElement } from "react-hook-form-mui";
 
-type GeneralDataProps = {
-  codeRef: React.RefObject<HTMLInputElement>;
-};
+export default function GeneralData() {
+  const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
 
-export default function GeneralData({ codeRef }: GeneralDataProps) {
   return (
     <>
       <Grid size={12}>
