@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 
 
 const schema = z.object({
-  code: z.string(),
+  code: z.string().trim(),
   firstName: z.string().trim(),
   lastName: z.string().trim(),
 })
