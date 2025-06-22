@@ -51,13 +51,14 @@ export default function ListInterviewed() {
           field: "actions",
           type: "actions",
           width: 80,
-          getActions: () => {
+          getActions: (params) => {
             return [
-              <Tooltip title="a" key="edit">
+              <Tooltip title="Ver más" key="edit">
                 <GridActionsCellItem
                   icon={<SearchIcon />}
                   label="Ver"
-                  onClick={() => router.push("")}
+                  onClick={() => router.push("/interviewed/" + params.id)}
+                  // TODO: could this be replaced with a Link
                 />
               </Tooltip>,
             ];
