@@ -8,6 +8,13 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { esES } from "@mui/x-data-grid/locales";
 import Link from "next/link";
+import { withOutSorting } from "../(components)/helpers/withOutSorting";
+import { usePagination } from "../(components)/hook-customization/usePagination";
+import { useQueryState } from "../(components)/hook-customization/useQueryState";
+import useDebounce from "../(components)/helpers/useDebounce";
+import { Page } from "../(api)/pagination";
+import useSWR from "swr";
+import Loading from "../(components)/Loading";
 
 type Interviewed = {
   id?: number;
@@ -18,21 +25,24 @@ type Interviewed = {
 
 export default function ListInterviewed() {
   const router = useRouter();
-
-  const [interview] = React.useState({
-    _embedded: {
-      inter: [],
-    },
-    page: {
-      size: "",
-      totalElements: "",
-      totalPages: "",
-      number: "",
-    },
+  const { paginationModel, setPaginationModel } = usePagination();
+  const [searchText, setSearchText] = useQueryState("searchText", {
+    defaultValue: "",
   });
+  const debouncedSearch = useDebounce(searchText, 1000);
+  const { data: people, isLoading } = useSWR<Page<Interviewed>>([
+    `/people?searchText=${debouncedSearch}`,
+    {
+      params: {
+        page: paginationModel.page,
+        pageSize: paginationModel.pageSize,
+      },
+    },
+  ]);
+
 
   const columns = React.useMemo(
-    () =>
+    () => (
       [
         { field: "code", headerName: "Código" },
         { field: "name", headerName: "Nombre" },
@@ -53,7 +63,7 @@ export default function ListInterviewed() {
             ];
           },
         },
-      ] as GridColDef<Interviewed>[],
+      ] as GridColDef<Interviewed>[]).map(withOutSorting),
     [router]
   );
 
@@ -70,11 +80,20 @@ export default function ListInterviewed() {
         </Link>
       </Stack>
       <div style={{ height: "70vh" }}>
-        <DataGrid
-          columns={columns}
-          rows={interview._embedded.inter}
-          localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-        />
+        {
+          people ?
+            <DataGrid
+              loading={isLoading}
+              columns={columns}
+              rowCount={people?.page.totalElements || 0}
+              paginationModel={paginationModel}
+              paginationMode="server"
+              onPaginationModelChange={setPaginationModel}
+              disableColumnFilter
+              rows={people._embedded.people || []}
+              localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+            /> : <Loading />
+        }
       </div>
     </Stack>
   );
