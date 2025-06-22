@@ -90,7 +90,7 @@ export default function ListInterviewed() {
               paginationMode="server"
               onPaginationModelChange={setPaginationModel}
               disableColumnFilter
-              rows={people._embedded.people || []}
+              rows={people._embedded?.persons || []}
               localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             /> : <Loading />
         }
