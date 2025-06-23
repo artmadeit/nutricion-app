@@ -15,6 +15,7 @@ import useDebounce from "../(components)/helpers/useDebounce";
 import { Page } from "../(api)/pagination";
 import useSWR from "swr";
 import Loading from "../(components)/Loading";
+import { FileDownload } from "@mui/icons-material";
 
 type Interviewed = {
   id?: number;
@@ -40,61 +41,78 @@ export default function ListInterviewed() {
     },
   ]);
 
-
   const columns = React.useMemo(
-    () => (
-      [
-        { field: "code", headerName: "Código" },
-        { field: "firstName", headerName: "Nombre" },
-        { field: "lastName", headerName: "Apellido" },
-        {
-          field: "actions",
-          type: "actions",
-          width: 80,
-          getActions: (params) => {
-            return [
-              <Tooltip title="Ver más" key="edit">
-                <GridActionsCellItem
-                  icon={<SearchIcon />}
-                  label="Ver"
-                  onClick={() => router.push("/interviewed/" + params.id)}
-                  // TODO: could this be replaced with a Link
-                />
-              </Tooltip>,
-            ];
+    () =>
+      (
+        [
+          { field: "code", headerName: "Código" },
+          { field: "firstName", headerName: "Nombre" },
+          { field: "lastName", headerName: "Apellido" },
+          {
+            field: "actions",
+            type: "actions",
+            width: 80,
+            getActions: (params) => {
+              return [
+                <Tooltip title="Ver más" key="edit">
+                  <GridActionsCellItem
+                    icon={<SearchIcon />}
+                    label="Ver"
+                    onClick={() => router.push("/interviewed/" + params.id)}
+                    // TODO: could this be replaced with a Link
+                  />
+                </Tooltip>,
+              ];
+            },
           },
-        },
-      ] as GridColDef<Interviewed>[]).map(withOutSorting),
+        ] as GridColDef<Interviewed>[]
+      ).map(withOutSorting),
     [router]
   );
 
   return (
     <Stack direction="column" spacing={2}>
-      <Stack direction="row" alignItems="center" spacing={2}>
-        <Typography variant="h4">Entrevistados</Typography>
-        <Link href="/interviewed/create">
-          <Tooltip title="Crear">
-            <Fab color="primary" aria-labelledby="add">
-              <AddIcon />
+      <Stack
+        direction="row"
+        sx={{ display: "flex", justifyContent: "space-between" }}
+        alignItems="center"
+        spacing={2}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="h4">Entrevistados</Typography>
+          <Link href="/interviewed/create" style={{ paddingLeft: "10px" }}>
+            <Tooltip title="Crear">
+              <Fab color="primary" aria-labelledby="add">
+                <AddIcon />
+              </Fab>
+            </Tooltip>
+          </Link>
+        </div>
+
+        <div>
+          <Tooltip title="Descargar en CSV">
+            <Fab aria-labelledby="add">
+              <FileDownload />
             </Fab>
           </Tooltip>
-        </Link>
+        </div>
       </Stack>
       <div style={{ height: "70vh" }}>
-        {
-          people ?
-            <DataGrid
-              loading={isLoading}
-              columns={columns}
-              rowCount={people?.page.totalElements || 0}
-              paginationModel={paginationModel}
-              paginationMode="server"
-              onPaginationModelChange={setPaginationModel}
-              disableColumnFilter
-              rows={people._embedded?.people || []}
-              localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-            /> : <Loading />
-        }
+        {people ? (
+          <DataGrid
+            loading={isLoading}
+            columns={columns}
+            rowCount={people?.page.totalElements || 0}
+            paginationModel={paginationModel}
+            paginationMode="server"
+            onPaginationModelChange={setPaginationModel}
+            disableColumnFilter
+            rows={people._embedded?.people || []}
+            localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+          />
+        ) : (
+          <Loading />
+        )}
       </div>
     </Stack>
   );
