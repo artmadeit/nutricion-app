@@ -16,6 +16,7 @@ import { Page } from "../(api)/pagination";
 import useSWR from "swr";
 import Loading from "../(components)/Loading";
 import { FileDownload } from "@mui/icons-material";
+import { CSVLink } from "react-csv";
 
 type Interviewed = {
   id?: number;
@@ -30,6 +31,7 @@ export default function ListInterviewed() {
   const [searchText, setSearchText] = useQueryState("searchText", {
     defaultValue: "",
   });
+  
   const debouncedSearch = useDebounce(searchText, 1000);
   const { data: people, isLoading } = useSWR<Page<Interviewed>>([
     `/people?searchText=${debouncedSearch}`,
@@ -70,6 +72,8 @@ export default function ListInterviewed() {
     [router]
   );
 
+  const csvData = people?._embedded.people || [];
+
   return (
     <Stack direction="column" spacing={2}>
       <Stack
@@ -90,11 +94,21 @@ export default function ListInterviewed() {
         </div>
 
         <div>
-          <Tooltip title="Descargar en CSV">
-            <Fab aria-labelledby="add">
-              <FileDownload />
-            </Fab>
-          </Tooltip>
+          <CSVLink
+            data={csvData}
+            headers={[
+              { label: "Código", key: "code" },
+              { label: "Nombre", key: "firstName" },
+              { label: "Apellido", key: "lastName" },
+            ]}
+            filename="interviewed.csv"
+          >
+            <Tooltip title="Descargar en CSV">
+              <Fab aria-labelledby="add">
+                <FileDownload />
+              </Fab>
+            </Tooltip>
+          </CSVLink>
         </div>
       </Stack>
       <div style={{ height: "70vh" }}>
@@ -107,7 +121,7 @@ export default function ListInterviewed() {
             paginationMode="server"
             onPaginationModelChange={setPaginationModel}
             disableColumnFilter
-            rows={people._embedded?.people || []}
+            rows={people?._embedded?.people || []}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
           />
         ) : (
