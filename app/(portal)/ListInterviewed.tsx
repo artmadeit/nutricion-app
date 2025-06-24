@@ -1,6 +1,13 @@
 "use client";
 
-import { Fab, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  Fab,
+  InputAdornment,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
@@ -31,7 +38,7 @@ export default function ListInterviewed() {
   const [searchText, setSearchText] = useQueryState("searchText", {
     defaultValue: "",
   });
-  
+
   const debouncedSearch = useDebounce(searchText, 1000);
   const { data: people, isLoading } = useSWR<Page<Interviewed>>([
     `/people?searchText=${debouncedSearch}`,
@@ -71,6 +78,14 @@ export default function ListInterviewed() {
       ).map(withOutSorting),
     [router]
   );
+  
+
+  const handleChange: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = (event) => {
+    const searchText = event.target.value;
+    setSearchText(searchText);
+  };
 
   const csvData = people?._embedded.people || [];
 
@@ -111,6 +126,20 @@ export default function ListInterviewed() {
           </CSVLink>
         </div>
       </Stack>
+      <TextField
+        placeholder="Buscar..."
+        variant="outlined"
+        value={searchText}
+        onChange={handleChange}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+
       <div style={{ height: "70vh" }}>
         {people ? (
           <DataGrid
