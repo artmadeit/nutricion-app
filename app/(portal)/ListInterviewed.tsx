@@ -32,8 +32,8 @@ const CSVLink = dynamic(() => import("react-csv").then((mod) => mod.CSVLink), {
 
 type Interviewed = {
   id?: number;
-  code: number;
-  name: string;
+  code: string;
+  firstName: string;
   lastName: string;
 };
 
@@ -84,12 +84,12 @@ export default function ListInterviewed() {
     [router]
   );
 
-  const handleChange: React.ChangeEventHandler<
-    HTMLInputElement | HTMLTextAreaElement
-  > = (event) => {
-    const searchText = event.target.value;
-    setSearchText(searchText);
-  };
+  // const handleChange: React.ChangeEventHandler<
+  //   HTMLInputElement | HTMLTextAreaElement
+  // > = (event) => {
+  //   const searchText = event.target.value;
+  //   setSearchText(searchText);
+  // };
 
   const csvData = people?._embedded.people || [];
 
@@ -134,14 +134,23 @@ export default function ListInterviewed() {
         placeholder="Buscar..."
         variant="outlined"
         value={searchText}
-        onChange={handleChange}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
+        // onChange={handleChange}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          },
         }}
+        // InputProps={{
+        //   startAdornment: (
+        //     <InputAdornment position="start">
+        //       <SearchIcon />
+        //     </InputAdornment>
+        //   ),
+        // }}
       />
 
       <div style={{ height: "70vh" }}>
@@ -154,7 +163,7 @@ export default function ListInterviewed() {
             paginationMode="server"
             onPaginationModelChange={setPaginationModel}
             disableColumnFilter
-            rows={people?._embedded?.people || []}
+            rows={people._embedded?.people || []}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
           />
         ) : (
