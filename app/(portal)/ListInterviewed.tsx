@@ -91,7 +91,7 @@ export default function ListInterviewed() {
   //   setSearchText(searchText);
   // };
 
-  const csvData = people?._embedded.people || [];
+  const csvData = people?._embedded?.people || [];
 
   return (
     <Stack direction="column" spacing={2}>
