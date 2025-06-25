@@ -23,7 +23,12 @@ import { Page } from "../(api)/pagination";
 import useSWR from "swr";
 import Loading from "../(components)/Loading";
 import { FileDownload } from "@mui/icons-material";
-import { CSVLink } from "react-csv";
+// import { CSVLink } from "react-csv";
+import dynamic from "next/dynamic";
+
+const CSVLink = dynamic(() => import("react-csv").then((mod) => mod.CSVLink), {
+  ssr: false,
+});
 
 type Interviewed = {
   id?: number;
@@ -78,7 +83,6 @@ export default function ListInterviewed() {
       ).map(withOutSorting),
     [router]
   );
-  
 
   const handleChange: React.ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
