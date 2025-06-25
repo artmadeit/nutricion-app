@@ -174,7 +174,7 @@ export function InterviewForm() {
               gutterBottom
               style={{ paddingTop: "20px" }}
             >
-              Datos generales de entrevista
+              Datos recordatorio - R24H
             </Typography>
           </Grid>
           <Grid size={6}>
@@ -232,7 +232,7 @@ export function InterviewForm() {
               gutterBottom
               style={{ paddingTop: "20px" }}
             >
-              Datos generales de consumo de alimentos
+              Preparaciones
             </Typography>
           </Grid>
           {foodFields.map((field, foodIndex) => {
