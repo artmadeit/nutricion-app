@@ -2,6 +2,7 @@ import React from "react";
 import { Grid, TextField, Tooltip, Fab, Divider, Autocomplete, CircularProgress } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { TextFieldElement, SelectElement } from "react-hook-form-mui";
+import { api } from "@/app/(api)/api";
 
 interface IngredientFieldsProps {
   ingredient: any;
@@ -11,15 +12,8 @@ interface IngredientFieldsProps {
   removeIngredient: (foodIndex: number, ingredientIndex: number) => void;
 }
 
-function sleep(duration: number): Promise<void> {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, duration);
-  });
-}
-
 interface Food {
+  id: number;
   name: string;
 }
 
@@ -38,25 +32,17 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   const [options, setOptions] = React.useState<readonly Food[]>([]);
   const [loading, setLoading] = React.useState(false);
 
-  const handleOpen = () => {
+  const handleOpen = async () => {
     setOpen(true);
-    (async () => {
-      setLoading(true);
-      await sleep(1e3); // For demo purposes.
-      setLoading(false);
+    setLoading(true);
 
-      setOptions([
-        {
-          name: "Abcd"
-        },
-        {
-          name: "Arthur"
-        },
-        {
-          name: "Arnold"
-        }
-      ]);
-    })();
+    try {
+      const response = await api.get("/foods/search/findByNameContainsIgnoringCase?searchText=a&page=0&size=20")
+      const foods = response.data._embedded?.foods
+      setOptions(foods);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
@@ -95,10 +81,11 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           open={open}
           onOpen={handleOpen}
           onClose={handleClose}
-          isOptionEqualToValue={(option, value) => option.name === value.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionLabel={(option) => option.name}
           options={options}
           loading={loading}
+          noOptionsText="TODO: andre cambiar texto"
           renderInput={(params) => (
             <TextField
               {...params}

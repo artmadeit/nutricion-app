@@ -11,7 +11,9 @@ import { api } from "@/app/(api)/api";
 import { useRouter } from "next/navigation";
 
 
-const schema = z.object({
+// TODO: andre ver como reusar este schema para editar y crear interviewed
+// ademas validar codigo debe ser de 6 digitos (como el masked input)
+const schema = z.object({ 
   code: z.string().trim(),
   firstName: z.string().trim(),
   lastName: z.string().trim(),
