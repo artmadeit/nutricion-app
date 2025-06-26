@@ -1,11 +1,10 @@
-import React from "react";
-import { Grid, TextField, Tooltip, Fab, Divider, Autocomplete, CircularProgress } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { TextFieldElement, SelectElement, AutocompleteElement } from "react-hook-form-mui";
-import { api } from "@/app/(api)/api";
-import useDebounce from "@/app/(components)/helpers/useDebounce";
-import useSWR from "swr";
 import { Page } from "@/app/(api)/pagination";
+import useDebounce from "@/app/(components)/helpers/useDebounce";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Divider, Fab, Grid, TextField, Tooltip } from "@mui/material";
+import React from "react";
+import { AutocompleteElement, SelectElement, TextFieldElement } from "react-hook-form-mui";
+import useSWR from "swr";
 
 interface IngredientFieldsProps {
   ingredient: any;

@@ -15,7 +15,7 @@ import {
 import { format } from "date-fns/format";
 import { es } from "date-fns/locale";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   FormContainer,
   SelectElement,
@@ -27,6 +27,9 @@ import useSWR from "swr";
 import { z } from "zod";
 import { IngredientFields } from "./IngredientFields";
 
+// TODO: andre hacer que todos los campos sean obligatorios requeridos 
+// (creo que x defecto es asi en zod, en yup si es necesario required)
+// pero corroborar
 const schema = z.object({
   code: z.string(),
   firstName: z.string().trim(),
@@ -34,11 +37,15 @@ const schema = z.object({
   interviewDate: z.date(),
   interviewNumber: z.string(),
   foods: z.array(
+    // TODO: andre hacer que campos coincidan con los del backend (ver swagger POST /interviews)
+    // eso nos servira al momento que hagamos el submit como hemos hecho antes
     z.object({
+      // TODO: andre aca falta agregar mas campos
       origin: z.string(), // TODO: use enum,
       consumptionTime: z.date(),
       ingredients: z.array(
         z.object({
+          // TODO: andre aca falta agregar mas campos
           weightInGrams: z
             .number()
             .min(0.1)
