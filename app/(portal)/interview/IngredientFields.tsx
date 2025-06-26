@@ -1,8 +1,11 @@
 import React from "react";
 import { Grid, TextField, Tooltip, Fab, Divider, Autocomplete, CircularProgress } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { TextFieldElement, SelectElement } from "react-hook-form-mui";
+import { TextFieldElement, SelectElement, AutocompleteElement } from "react-hook-form-mui";
 import { api } from "@/app/(api)/api";
+import useDebounce from "@/app/(components)/helpers/useDebounce";
+import useSWR from "swr";
+import { Page } from "@/app/(api)/pagination";
 
 interface IngredientFieldsProps {
   ingredient: any;
@@ -14,6 +17,7 @@ interface IngredientFieldsProps {
 
 interface Food {
   id: number;
+  code: string;
   name: string;
 }
 
@@ -29,31 +33,20 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
     weightInGrams - weigthInGramsResidue
   ).toFixed(1);
 
-  const [value, setValue] = React.useState<Food | null>(null);
-  const [inputValue, setInputValue] = React.useState("");
-  const [options, setOptions] = React.useState<readonly Food[]>([]);
-  const [loading, setLoading] = React.useState(false);
 
-  React.useEffect(() => {
-    if (!inputValue) {
-      setOptions([]);
-      return;
-    }
-    const handler = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const response = await api.get(`/foods/search/findByNameContainsIgnoringCase?searchText=${encodeURIComponent(inputValue)}&page=0&size=20`);
-        const foods = response.data._embedded?.foods || [];
-        setOptions(foods);
-      } finally {
-        setLoading(false);
-      }
-    }, 400); // debounce
-    return () => clearTimeout(handler);
-  }, [inputValue]);
+  const [searchTextFood, setSearchTextFood] = React.useState("");
 
-  console.log(inputValue)
-  console.log(value)
+  const [searchTextDebounced] = useDebounce(
+    searchTextFood,
+    500
+  );
+  const { data: foods } = useSWR<Page<Food>>([
+    `/foods/search/findByNameContainsIgnoringCase?searchText=${encodeURIComponent(searchTextDebounced)}&page=0&size=20`
+  ]);
+
+
+  console.log(ingredient)
+
   return (
     <React.Fragment>
       <Grid size={1}>
@@ -75,45 +68,22 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
         />
       </Grid>
       <Grid size={7}>
-        {/* <TextFieldElement
-          fullWidth
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodIngredients`}
-          label="Ingrediente (nombre del Alimento)"
-        /> */}
-        <Autocomplete
-          fullWidth
-          inputValue={inputValue}
-          onInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
-          value={value}
-          onChange={(event: any, newValue) => {
-            // setOptions(newValue ? [newValue, ...options] : options);
-            setValue(newValue);
+        <AutocompleteElement
+          autocompleteProps={{
+            freeSolo: true,
+            onInputChange: (_event, newInputValue) => {
+              setSearchTextFood(newInputValue);
+            },
           }}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(option) =>
-            typeof option === 'string' ? option : option.name
+          label="Ingrediente (nombre del Alimento)"
+          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodIngredients`}
+          options={
+            foods?._embedded?.foods.map((x) => ({
+              id: x.id,
+              label: x.name,
+              code: x.code
+            })) || []
           }
-          filterOptions={(x) => x}
-          options={options}
-          loading={loading}
-          noOptionsText="TODO: andre cambiar texto"
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Ingrediente (nombre del Alimento)"
-              slotProps={{
-                input: {
-                  ...params.InputProps,
-                  endAdornment: (
-                    <React.Fragment>
-                      {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                      {params.InputProps.endAdornment}
-                    </React.Fragment>
-                  ),
-                }
-              }}
-            />
-          )}
         />
       </Grid>
       <Grid
