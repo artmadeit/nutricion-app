@@ -33,7 +33,6 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
     weightInGrams - weigthInGramsResidue
   ).toFixed(1);
 
-
   const [searchTextFood, setSearchTextFood] = React.useState("");
 
   const [searchTextDebounced] = useDebounce(
@@ -43,9 +42,6 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   const { data: foods } = useSWR<Page<Food>>([
     `/foods/search/findByNameContainsIgnoringCase?searchText=${encodeURIComponent(searchTextDebounced)}&page=0&size=20`
   ]);
-
-
-  console.log(ingredient)
 
   return (
     <React.Fragment>
@@ -59,12 +55,11 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
         />
       </Grid>
       <Grid size={3}>
-        <TextFieldElement
-          fullWidth
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodTableCode`}
+        <TextField
           label="Código alimento tabla"
+          value={ingredient.foodIngredient?.code || "-"}
           disabled
-        //TODO: automatic
+          fullWidth
         />
       </Grid>
       <Grid size={7}>
@@ -76,7 +71,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
             },
           }}
           label="Ingrediente (nombre del Alimento)"
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodIngredients`}
+          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodIngredient`}
           options={
             foods?._embedded?.foods.map((x) => ({
               id: x.id,
