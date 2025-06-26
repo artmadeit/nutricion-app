@@ -84,12 +84,12 @@ export default function ListInterviewed() {
     [router]
   );
 
-  // const handleChange: React.ChangeEventHandler<
-  //   HTMLInputElement | HTMLTextAreaElement
-  // > = (event) => {
-  //   const searchText = event.target.value;
-  //   setSearchText(searchText);
-  // };
+  const handleChange: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = (event) => {
+    const searchText = event.target.value;
+    setSearchText(searchText);
+  };
 
   const csvData = people?._embedded?.people || [];
 
@@ -134,7 +134,7 @@ export default function ListInterviewed() {
         placeholder="Buscar..."
         variant="outlined"
         value={searchText}
-        // onChange={handleChange}
+        onChange={handleChange}
         slotProps={{
           input: {
             startAdornment: (
@@ -144,13 +144,6 @@ export default function ListInterviewed() {
             ),
           },
         }}
-        // InputProps={{
-        //   startAdornment: (
-        //     <InputAdornment position="start">
-        //       <SearchIcon />
-        //     </InputAdornment>
-        //   ),
-        // }}
       />
 
       <div style={{ height: "70vh" }}>
