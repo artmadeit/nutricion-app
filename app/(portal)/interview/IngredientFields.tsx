@@ -28,28 +28,32 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   const quantityConsumed = (
     weightInGrams - weigthInGramsResidue
   ).toFixed(1);
-  const [open, setOpen] = React.useState(false);
+
+  const [value, setValue] = React.useState<Food | null>(null);
+  const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState<readonly Food[]>([]);
   const [loading, setLoading] = React.useState(false);
 
-  const handleOpen = async () => {
-    setOpen(true);
-    setLoading(true);
-
-    try {
-      const response = await api.get("/foods/search/findByNameContainsIgnoringCase?searchText=a&page=0&size=20")
-      const foods = response.data._embedded?.foods
-      setOptions(foods);
-    } finally {
-      setLoading(false);
+  React.useEffect(() => {
+    if (!inputValue) {
+      setOptions([]);
+      return;
     }
-  };
+    const handler = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const response = await api.get(`/foods/search/findByNameContainsIgnoringCase?searchText=${encodeURIComponent(inputValue)}&page=0&size=20`);
+        const foods = response.data._embedded?.foods || [];
+        setOptions(foods);
+      } finally {
+        setLoading(false);
+      }
+    }, 400); // debounce
+    return () => clearTimeout(handler);
+  }, [inputValue]);
 
-  const handleClose = () => {
-    setOpen(false);
-    setOptions([]);
-  };
-
+  console.log(inputValue)
+  console.log(value)
   return (
     <React.Fragment>
       <Grid size={1}>
@@ -78,11 +82,18 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
         /> */}
         <Autocomplete
           fullWidth
-          open={open}
-          onOpen={handleOpen}
-          onClose={handleClose}
+          inputValue={inputValue}
+          onInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
+          value={value}
+          onChange={(event: any, newValue) => {
+            // setOptions(newValue ? [newValue, ...options] : options);
+            setValue(newValue);
+          }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(option) => option.name}
+          getOptionLabel={(option) =>
+            typeof option === 'string' ? option : option.name
+          }
+          filterOptions={(x) => x}
           options={options}
           loading={loading}
           noOptionsText="TODO: andre cambiar texto"
@@ -99,7 +110,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
                       {params.InputProps.endAdornment}
                     </React.Fragment>
                   ),
-                },
+                }
               }}
             />
           )}
