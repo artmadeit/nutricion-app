@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, TextField, Tooltip, Fab, Divider } from "@mui/material";
+import { Grid, TextField, Tooltip, Fab, Divider, Autocomplete, CircularProgress } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { TextFieldElement, SelectElement } from "react-hook-form-mui";
 
@@ -9,6 +9,18 @@ interface IngredientFieldsProps {
   foodIndex: number;
   ingredientsLength: number;
   removeIngredient: (foodIndex: number, ingredientIndex: number) => void;
+}
+
+function sleep(duration: number): Promise<void> {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });
+}
+
+interface Food {
+  name: string;
 }
 
 export const IngredientFields: React.FC<IngredientFieldsProps> = ({
@@ -22,6 +34,35 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   const quantityConsumed = (
     weightInGrams - weigthInGramsResidue
   ).toFixed(1);
+  const [open, setOpen] = React.useState(false);
+  const [options, setOptions] = React.useState<readonly Food[]>([]);
+  const [loading, setLoading] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+    (async () => {
+      setLoading(true);
+      await sleep(1e3); // For demo purposes.
+      setLoading(false);
+
+      setOptions([
+        {
+          name: "Abcd"
+        },
+        {
+          name: "Arthur"
+        },
+        {
+          name: "Arnold"
+        }
+      ]);
+    })();
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setOptions([]);
+  };
 
   return (
     <React.Fragment>
@@ -40,26 +81,41 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodTableCode`}
           label="Código alimento tabla"
           disabled
-          //TODO: automatic
+        //TODO: automatic
         />
       </Grid>
       <Grid size={7}>
-        {/* <Autocomplete
-            disablePortal
-            options={top100Films}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Ingrediente (nombre del Alimento)"
-              />
-            )}
-          /> */}
-        <TextFieldElement
-          //TODO
+        {/* <TextFieldElement
           fullWidth
           name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodIngredients`}
           label="Ingrediente (nombre del Alimento)"
+        /> */}
+        <Autocomplete
+          fullWidth
+          open={open}
+          onOpen={handleOpen}
+          onClose={handleClose}
+          isOptionEqualToValue={(option, value) => option.name === value.name}
+          getOptionLabel={(option) => option.name}
+          options={options}
+          loading={loading}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Ingrediente (nombre del Alimento)"
+              slotProps={{
+                input: {
+                  ...params.InputProps,
+                  endAdornment: (
+                    <React.Fragment>
+                      {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                      {params.InputProps.endAdornment}
+                    </React.Fragment>
+                  ),
+                },
+              }}
+            />
+          )}
         />
       </Grid>
       <Grid
