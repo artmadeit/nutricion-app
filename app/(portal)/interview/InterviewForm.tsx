@@ -1,6 +1,7 @@
 "use client";
 
 import GeneralData from "@/app/(components)/GeneralData";
+import Loading from "@/app/(components)/Loading";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,7 +15,8 @@ import {
 import { useMask } from "@react-input/mask";
 import { format } from "date-fns/format";
 import { es } from "date-fns/locale";
-import React from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
 import {
   FormContainer,
   SelectElement,
@@ -22,6 +24,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form-mui";
+import useSWR from "swr";
 import { z } from "zod";
 
 const schema = z.object({
@@ -122,15 +125,36 @@ const emptyFood = {
   ingredients: [{ ...emptyIngredient }],
 };
 
-export function InterviewForm() {
+const defaultInterviewData = {
+  interviewNumber: "001",
+  interviewDate: new Date(),
+  foods: [emptyFood],
+}
+
+export function InterviewForm({ personId }: { personId: number }) {
+  const searchParams = useSearchParams();
+  const interviewNumber = +(searchParams.get("number") || 1);
+  const { data: person } = useSWR(personId ? `people/${personId}` : null);
+
+  console.log(person)
   const formContext = useForm({
     defaultValues: {
-      interviewNumber: "001",
-      interviewDate: new Date(),
-      foods: [emptyFood],
+      ...defaultInterviewData
     },
     resolver: zodResolver(schema),
   });
+
+  useEffect(() => {
+    if (person) {
+      formContext.reset({
+        code: person.code,
+        firstName: person.firstName,
+        lastName: person.lastName,
+
+        ...defaultInterviewData
+      })
+    }
+  }, [person])
 
   const {
     fields: foodFields,
@@ -158,6 +182,7 @@ export function InterviewForm() {
     ]);
   };
 
+  if (!person) return <Loading />;
   return (
     <div>
       <FormContainer
@@ -379,7 +404,7 @@ export function InterviewForm() {
                             name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodTableCode`}
                             label="Código alimento tabla"
                             disabled
-                            //TODO: automatic
+                          //TODO: automatic
                           />
                         </Grid>
                         <Grid size={6}>
