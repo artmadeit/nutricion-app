@@ -5,7 +5,7 @@ import Loading from "@/app/(components)/Loading";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Fab, MenuItem, Select, Grid, TextField, Tooltip, Typography, InputLabel, FormControl } from "@mui/material";
+import { Fab, MenuItem, Select, Grid, TextField, Tooltip, Typography, InputLabel, FormControl, Divider } from "@mui/material";
 import Button from "@mui/material/Button";
 import {
   DatePicker,
@@ -218,6 +218,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                 labelId="interviewNumber"
                 id="interviewNumber"
                 value={interviewNumber}
+                label="N° R24H"
                 disabled
               >
                 <MenuItem value={1}>Primero</MenuItem>
@@ -367,7 +368,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                     fullWidth
                   />
                 </Grid>
-                <Grid container>
+                <Grid container sx={{ pl: 8 }}>
                   <Grid size={12}>
                     <Typography
                       variant="h6"
@@ -495,6 +496,9 @@ export function InterviewForm({ personId }: { personId: number }) {
                             fullWidth
                           />
                         </Grid>
+                        <Grid size={12}>
+                          <Divider />
+                        </Grid>
                       </React.Fragment>
                     );
                   })}
@@ -508,6 +512,9 @@ export function InterviewForm({ personId }: { personId: number }) {
                       Agregar ingrediente
                     </Button>
                   </Grid>
+                </Grid>
+                <Grid size={12}>
+                  <Divider />
                 </Grid>
               </Grid>
             );

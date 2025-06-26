@@ -4,6 +4,10 @@ import { Grid, Typography } from "@mui/material";
 import { useMask } from "@react-input/mask";
 import { TextFieldElement } from "react-hook-form-mui";
 
+// TODO: andre renombrar esto a GeneralPersonData
+// debe tener tambien un prop modo disabled
+// si es disabled que por defecto es false
+// si es true deshabilita todo los campos
 export default function GeneralData() {
   const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
 
