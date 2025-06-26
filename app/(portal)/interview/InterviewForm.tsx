@@ -1,6 +1,6 @@
 "use client";
 
-import GeneralData from "@/app/(components)/GeneralData";
+import GeneralPersonData from "@/app/(components)/GeneralPersonData";
 import Loading from "@/app/(components)/Loading";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
@@ -207,7 +207,7 @@ export function InterviewForm({ personId }: { personId: number }) {
         }}
       >
         <Grid container spacing={2} margin={4}>
-          <GeneralData />
+          <GeneralPersonData />
           <Grid size={12}>
             <Typography
               variant="h5"
@@ -383,7 +383,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                     fullWidth
                   />
                 </Grid>
-                <Grid container sx={{ pl: 8 }}>
+                <Grid container >
                   <Grid size={12}>
                     <Typography
                       variant="h6"

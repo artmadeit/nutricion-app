@@ -1,6 +1,6 @@
 "use client";
 
-import GeneralData from "@/app/(components)/GeneralData";
+import GeneralPersonData from "@/app/(components)/GeneralPersonData";
 import { Button, Grid, Typography } from "@mui/material";
 import React from "react";
 // import { useMask } from "@react-input/mask";
@@ -41,7 +41,7 @@ export default function Interviewed() {
           router.push("/interviewed/" + response.data.id)       
         }}>
         <Grid container spacing={2} margin={2}>
-          <GeneralData />
+          <GeneralPersonData />
           <Grid size={12}>
             <Button variant="contained" type="submit">
               Guardar

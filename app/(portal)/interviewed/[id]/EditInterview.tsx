@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/app/(api)/api";
-import GeneralData from "@/app/(components)/GeneralData";
+import GeneralPersonData from "@/app/(components)/GeneralPersonData";
 import { withOutSorting } from "@/app/(components)/helpers/withOutSorting";
 import Loading from "@/app/(components)/Loading";
 import AddIcon from "@mui/icons-material/Add";
@@ -66,7 +66,7 @@ export function EditInterview({ id }: { id: number }) {
           router.push("/")
         }}>
         <Grid container spacing={2} margin={2}>
-          <GeneralData />
+          <GeneralPersonData />
           <Grid size={12}>
             <Button variant="contained" type="submit">Guardar</Button>
           </Grid>
