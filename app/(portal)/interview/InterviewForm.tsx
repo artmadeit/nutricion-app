@@ -5,7 +5,7 @@ import Loading from "@/app/(components)/Loading";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Fab, Grid, TextField, Tooltip, Typography } from "@mui/material";
+import { Fab, MenuItem, Select, Grid, TextField, Tooltip, Typography, InputLabel, FormControl } from "@mui/material";
 import Button from "@mui/material/Button";
 import {
   DatePicker,
@@ -212,22 +212,18 @@ export function InterviewForm({ personId }: { personId: number }) {
             />
           </Grid>
           <Grid size={6}>
-            {/* TODO: automatic */}
-            <SelectElement
-              label="N° R24H"
-              name=""
-              options={[
-                {
-                  id: "1",
-                  label: "Primero",
-                },
-                {
-                  id: "2",
-                  label: "Segundo",
-                },
-              ]}
-              fullWidth
-            />
+            <FormControl fullWidth>
+              <InputLabel id="interviewNumber">N° R24H</InputLabel>
+              <Select
+                labelId="interviewNumber"
+                id="interviewNumber"
+                value={interviewNumber}
+                disabled
+              >
+                <MenuItem value={1}>Primero</MenuItem>
+                <MenuItem value={2}>Segundo</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid size={6}>
