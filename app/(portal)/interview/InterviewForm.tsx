@@ -5,14 +5,13 @@ import Loading from "@/app/(components)/Loading";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Fab, MenuItem, Select, Grid, TextField, Tooltip, Typography, InputLabel, FormControl, Divider } from "@mui/material";
+import { Divider, Fab, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import {
   DatePicker,
   renderTimeViewClock,
   TimePicker,
 } from "@mui/x-date-pickers";
-import { useMask } from "@react-input/mask";
 import { format } from "date-fns/format";
 import { es } from "date-fns/locale";
 import { useSearchParams } from "next/navigation";
@@ -136,7 +135,6 @@ export function InterviewForm({ personId }: { personId: number }) {
   const interviewNumber = +(searchParams.get("number") || 1);
   const { data: person } = useSWR(personId ? `people/${personId}` : null);
 
-  console.log(person)
   const formContext = useForm({
     defaultValues: {
       ...defaultInterviewData
@@ -180,6 +178,15 @@ export function InterviewForm({ personId }: { personId: number }) {
         ...emptyIngredient,
       },
     ]);
+  };
+
+  const removeIngredient = (foodIndex: number, ingredientIndex: number) => {
+    const currentIngredients =
+      formContext.getValues(`foods.${foodIndex}.ingredients`) || [];
+    const updatedIngredients = currentIngredients.filter(
+      (_, index) => index !== ingredientIndex
+    );
+    formContext.setValue(`foods.${foodIndex}.ingredients`, updatedIngredients);
   };
 
   if (!person) return <Loading />;
@@ -386,7 +393,7 @@ export function InterviewForm({ personId }: { personId: number }) {
 
                     return (
                       <React.Fragment key={ingredientIndex}>
-                        <Grid size={2}>
+                        <Grid size={1}>
                           <TextField
                             variant="outlined"
                             label="N° Orden de Alimento"
@@ -395,7 +402,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                             fullWidth
                           />
                         </Grid>
-                        <Grid size={4}>
+                        <Grid size={3}>
                           <TextFieldElement
                             fullWidth
                             name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodTableCode`}
@@ -404,7 +411,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                           //TODO: automatic
                           />
                         </Grid>
-                        <Grid size={6}>
+                        <Grid size={7}>
                           {/* <Autocomplete
                   disablePortal
                   options={top100Films}
@@ -422,6 +429,22 @@ export function InterviewForm({ personId }: { personId: number }) {
                             name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodIngredients`}
                             label="Ingrediente (nombre del Alimento)"
                           />
+                        </Grid>
+                        <Grid
+                          size={1}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "end",
+                            alignItems: "center",
+                          }}
+                        >
+                          {ingredients.length > 1 && (
+                            <Tooltip title="Eliminar ingrediente">
+                              <Fab size="small" onClick={() => removeIngredient(foodIndex, ingredientIndex)}>
+                                <DeleteIcon />
+                              </Fab>
+                            </Tooltip>
+                          )}
                         </Grid>
                         <Grid size={6}>
                           <TextFieldElement
