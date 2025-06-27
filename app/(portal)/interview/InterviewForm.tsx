@@ -5,7 +5,18 @@ import Loading from "@/app/(components)/Loading";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Divider, Fab, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip, Typography } from "@mui/material";
+import {
+  Divider,
+  Fab,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import {
   DatePicker,
@@ -27,7 +38,7 @@ import useSWR from "swr";
 import { z } from "zod";
 import { IngredientFields } from "./IngredientFields";
 
-// TODO: andre hacer que todos los campos sean obligatorios requeridos 
+// TODO: andre hacer que todos los campos sean obligatorios requeridos
 // (creo que x defecto es asi en zod, en yup si es necesario required)
 // pero corroborar
 const schema = z.object({
@@ -41,11 +52,15 @@ const schema = z.object({
     // eso nos servira al momento que hagamos el submit como hemos hecho antes
     z.object({
       // TODO: andre aca falta agregar mas campos
+      code: z.string(),
+      name: z.string(),
       origin: z.string(), // TODO: use enum,
       consumptionTime: z.date(),
       ingredients: z.array(
         z.object({
           // TODO: andre aca falta agregar mas campos
+          portionServed: z.string(),
+          portionResidue: z.string(),
           weightInGrams: z
             .number()
             .min(0.1)
@@ -60,6 +75,7 @@ const schema = z.object({
             .refine((val) => Number.isInteger(val * 10), {
               message: "Debe tener exactamente un decimal",
             }),
+          source: z.string(),
         })
       ),
     })
@@ -136,7 +152,7 @@ const defaultInterviewData = {
   interviewNumber: "001",
   interviewDate: new Date(),
   foods: [emptyFood],
-}
+};
 
 export function InterviewForm({ personId }: { personId: number }) {
   const searchParams = useSearchParams();
@@ -145,7 +161,7 @@ export function InterviewForm({ personId }: { personId: number }) {
 
   const formContext = useForm({
     defaultValues: {
-      ...defaultInterviewData
+      ...defaultInterviewData,
     },
     resolver: zodResolver(schema),
   });
@@ -157,10 +173,10 @@ export function InterviewForm({ personId }: { personId: number }) {
         firstName: person.firstName,
         lastName: person.lastName,
 
-        ...defaultInterviewData
-      })
+        ...defaultInterviewData,
+      });
     }
-  }, [person])
+  }, [person]);
 
   const {
     fields: foodFields,
@@ -175,7 +191,6 @@ export function InterviewForm({ personId }: { personId: number }) {
   const day = interviewDate
     ? format(interviewDate, "eeee", { locale: es })
     : "";
-
 
   const handleAddIngredient = (foodIndex: number) => {
     const currentIngredients =
@@ -383,7 +398,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                     fullWidth
                   />
                 </Grid>
-                <Grid container >
+                <Grid container>
                   <Grid size={12}>
                     <Typography
                       variant="h6"

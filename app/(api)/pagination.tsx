@@ -3,7 +3,7 @@ export type Page<T> = {
   _embedded: {
     [key: string]: T[];
   };
-  _links: any;
+  _links: object;
   page: {
     size: number;
     totalElements: number;
