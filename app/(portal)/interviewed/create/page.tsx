@@ -10,14 +10,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/app/(api)/api";
 import { useRouter } from "next/navigation";
 
-
 // TODO: andre ver como reusar este schema para editar y crear interviewed
 // ademas validar codigo debe ser de 6 digitos (como el masked input)
-const schema = z.object({ 
-  code: z.string().trim(),
+const schema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(6)
+    .max(6, { message: "Must be 5 or fewer characters long" }),
   firstName: z.string().trim(),
   lastName: z.string().trim(),
-})
+});
 
 export default function Interviewed() {
   const formContext = useForm({
@@ -28,7 +31,7 @@ export default function Interviewed() {
     },
     resolver: zodResolver(schema),
   });
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <div>
@@ -38,8 +41,9 @@ export default function Interviewed() {
         onSuccess={async (values) => {
           const response = await api.post("people", values);
           alert("Información de la persona guardada");
-          router.push("/interviewed/" + response.data.id)       
-        }}>
+          router.push("/interviewed/" + response.data.id);
+        }}
+      >
         <Grid container spacing={2} margin={2}>
           <GeneralPersonData />
           <Grid size={12}>

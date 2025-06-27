@@ -44,7 +44,7 @@ export function EditInterview({ id }: { id: number }) {
                   icon={<SearchIcon />}
                   label="Ver"
                   onClick={() => router.push(`/interview/${params.id}`)}
-                  // TODO: could this be replaced with a Link
+                  //This could be replaced with a Link**
                 />
               </Tooltip>,
             ];

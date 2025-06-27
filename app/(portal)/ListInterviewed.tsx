@@ -73,7 +73,7 @@ export default function ListInterviewed() {
                     icon={<SearchIcon />}
                     label="Ver"
                     onClick={() => router.push("/interviewed/" + params.id)}
-                    // TODO: could this be replaced with a Link
+                    //This could be replaced with a Link**
                   />
                 </Tooltip>,
               ];

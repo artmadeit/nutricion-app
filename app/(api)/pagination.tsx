@@ -1,5 +1,5 @@
 export type Page<T> = {
-  // TODO: make this _embedded optional
+  //this _embedded could be optional**
   _embedded: {
     [key: string]: T[];
   };
