@@ -38,9 +38,6 @@ import useSWR from "swr";
 import { z } from "zod";
 import { IngredientFields } from "./IngredientFields";
 
-// TODO: andre hacer que todos los campos sean obligatorios requeridos
-// (creo que x defecto es asi en zod, en yup si es necesario required)
-// pero corroborar
 const schema = z.object({
   code: z.string(),
   firstName: z.string().trim(),
@@ -222,7 +219,7 @@ export function InterviewForm({ personId }: { personId: number }) {
         }}
       >
         <Grid container spacing={2} margin={4}>
-          <GeneralPersonData />
+          <GeneralPersonData disabled={true}/>
           <Grid size={12}>
             <Typography
               variant="h5"

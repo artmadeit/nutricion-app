@@ -4,10 +4,13 @@ import { Grid, Typography } from "@mui/material";
 import { useMask } from "@react-input/mask";
 import { TextFieldElement } from "react-hook-form-mui";
 
-// TODO: Debe tener tambien un prop modo disabled
-// si es disabled que por defecto es false
-// si es true deshabilita todo los campos
-export default function GeneralPersonData() {
+type GeneralPersonDataProps = {
+  disabled: boolean;
+};
+
+export default function GeneralPersonData({
+  disabled = false,
+}: GeneralPersonDataProps) {
   const codeRef = useMask({ mask: "______", replacement: { _: /\d/ } });
 
   return (
@@ -25,13 +28,26 @@ export default function GeneralPersonData() {
           placeholder="0123456"
           required
           inputRef={codeRef}
+          disabled={disabled}
         />
       </Grid>
       <Grid size={6}>
-        <TextFieldElement fullWidth name="firstName" label="Nombre" required />
+        <TextFieldElement
+          fullWidth
+          name="firstName"
+          label="Nombre"
+          required
+          disabled={disabled}
+        />
       </Grid>
       <Grid size={6}>
-        <TextFieldElement fullWidth name="lastName" label="Apellido" required />
+        <TextFieldElement
+          fullWidth
+          name="lastName"
+          label="Apellido"
+          required
+          disabled={disabled}
+        />
       </Grid>
     </>
   );

@@ -66,7 +66,7 @@ export function EditInterview({ id }: { id: number }) {
           router.push("/")
         }}>
         <Grid container spacing={2} margin={2}>
-          <GeneralPersonData />
+          <GeneralPersonData disabled={true}/>
           <Grid size={12}>
             <Button variant="contained" type="submit">Guardar</Button>
           </Grid>
