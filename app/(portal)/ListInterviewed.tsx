@@ -1,5 +1,8 @@
 "use client";
 
+import { FileDownload } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Fab,
   InputAdornment,
@@ -8,21 +11,17 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
-import SearchIcon from "@mui/icons-material/Search";
-import React from "react";
-import { useRouter } from "next/navigation";
 import { esES } from "@mui/x-data-grid/locales";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useQueryState } from 'nuqs';
+import React from "react";
+import useSWR from "swr";
+import { Page } from "../(api)/pagination";
 import { withOutSorting } from "../(components)/helpers/withOutSorting";
 import { usePagination } from "../(components)/hook-customization/usePagination";
-import { useQueryState } from "../(components)/hook-customization/useQueryState";
-import useDebounce from "../(components)/helpers/useDebounce";
-import { Page } from "../(api)/pagination";
-import useSWR from "swr";
 import Loading from "../(components)/Loading";
-import { FileDownload } from "@mui/icons-material";
 // import { CSVLink } from "react-csv";
 import dynamic from "next/dynamic";
 
@@ -42,11 +41,11 @@ export default function ListInterviewed() {
   const { paginationModel, setPaginationModel } = usePagination();
   const [searchText, setSearchText] = useQueryState("searchText", {
     defaultValue: "",
+    throttleMs: 500
   });
 
-  const debouncedSearch = useDebounce(searchText, 1000);
   const { data: people, isLoading } = useSWR<Page<Interviewed>>([
-    `/people?searchText=${debouncedSearch}`,
+    `/people?searchText=${searchText}`,
     {
       params: {
         page: paginationModel.page,
@@ -73,7 +72,7 @@ export default function ListInterviewed() {
                     icon={<SearchIcon />}
                     label="Ver"
                     onClick={() => router.push("/interviewed/" + params.id)}
-                    //This could be replaced with a Link**
+                  //This could be replaced with a Link**
                   />
                 </Tooltip>,
               ];

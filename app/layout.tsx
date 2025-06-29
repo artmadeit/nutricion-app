@@ -1,11 +1,12 @@
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import type { Metadata } from "next";
 import "./globals.css";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
-import { Roboto } from 'next/font/google';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from './theme';
+import { Roboto } from 'next/font/google';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Providers } from "./Providers";
+import theme from './theme';
 
 export const metadata: Metadata = {
   title: "Nutricion App",
@@ -27,13 +28,15 @@ export default function RootLayout({
   return (
     <html lang="es" className={roboto.variable}>
       <body>
-        <AppRouterCacheProvider>
-          <Providers>
-            <ThemeProvider theme={theme}>
-              {children}
-            </ThemeProvider>
-          </Providers>
-        </AppRouterCacheProvider>
+        <NuqsAdapter>
+          <AppRouterCacheProvider>
+            <Providers>
+              <ThemeProvider theme={theme}>
+                {children}
+              </ThemeProvider>
+            </Providers>
+          </AppRouterCacheProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );
