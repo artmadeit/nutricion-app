@@ -62,7 +62,7 @@ export function EditInterview({ id }: { id: number }) {
         defaultValues={person}
         onSuccess={async (values) => {
           await api.put(`/people/${id}`, values);
-          alert("Información de la persona guardada");
+          alert("Información de la persona guardada"); // TODO: andre usar snackbar copiar y pegar snackbar.ts de farmacia
           router.push("/")
         }}>
         <Grid container spacing={2} margin={2}>

@@ -5,7 +5,7 @@ import { useMask } from "@react-input/mask";
 import { TextFieldElement } from "react-hook-form-mui";
 
 type GeneralPersonDataProps = {
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 export default function GeneralPersonData({
