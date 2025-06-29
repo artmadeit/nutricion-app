@@ -44,7 +44,7 @@ const schema = z.object({
   lastName: z.string().trim(),
   interviewDate: z.date(),
   interviewNumber: z.string(),
-  foods: z.array(
+  recipes: z.array(
     // TODO: andre hacer que campos coincidan con los del backend (ver swagger POST /interviews)
     // eso nos servira al momento que hagamos el submit como hemos hecho antes
     z.object({
@@ -136,11 +136,11 @@ const emptyIngredient = {
   weightInGrams: 0,
   weigthInGramsResidue: 0,
   portionServed: "",
-  portionResidue: "",        
+  portionResidue: "",
   source: ""
 };
 
-const emptyFood = {
+const emptyRecipe = {
   code: "",
   name: "",
   consumptionTime: new Date(2000, 0, 1, 12, 0, 0),
@@ -151,7 +151,7 @@ const emptyFood = {
 const defaultInterviewData = {
   interviewNumber: "001",
   interviewDate: new Date(),
-  foods: [emptyFood],
+  recipes: [emptyRecipe],
 };
 
 export function InterviewForm({ personId }: { personId: number }) {
@@ -179,12 +179,12 @@ export function InterviewForm({ personId }: { personId: number }) {
   }, [person]);
 
   const {
-    fields: foodFields,
+    fields: recipeFields,
     append,
     remove,
   } = useFieldArray({
     control: formContext.control,
-    name: "foods",
+    name: "recipes",
   });
 
   const interviewDate = formContext.watch("interviewDate");
@@ -192,10 +192,10 @@ export function InterviewForm({ personId }: { personId: number }) {
     ? format(interviewDate, "eeee", { locale: es })
     : "";
 
-  const handleAddIngredient = (foodIndex: number) => {
+  const handleAddIngredient = (recipeIndex: number) => {
     const currentIngredients =
-      formContext.getValues(`foods.${foodIndex}.ingredients`) || [];
-    formContext.setValue(`foods.${foodIndex}.ingredients`, [
+      formContext.getValues(`recipes.${recipeIndex}.ingredients`) || [];
+    formContext.setValue(`recipes.${recipeIndex}.ingredients`, [
       ...currentIngredients,
       {
         ...emptyIngredient,
@@ -203,13 +203,13 @@ export function InterviewForm({ personId }: { personId: number }) {
     ]);
   };
 
-  const removeIngredient = (foodIndex: number, ingredientIndex: number) => {
+  const removeIngredient = (recipeIndex: number, ingredientIndex: number) => {
     const currentIngredients =
-      formContext.getValues(`foods.${foodIndex}.ingredients`) || [];
+      formContext.getValues(`recipes.${recipeIndex}.ingredients`) || [];
     const updatedIngredients = currentIngredients.filter(
       (_, index) => index !== ingredientIndex
     );
-    formContext.setValue(`foods.${foodIndex}.ingredients`, updatedIngredients);
+    formContext.setValue(`recipes.${recipeIndex}.ingredients`, updatedIngredients);
   };
 
   if (!person) return <Loading />;
@@ -218,7 +218,25 @@ export function InterviewForm({ personId }: { personId: number }) {
       <FormContainer
         formContext={formContext}
         onSuccess={(values) => {
-          console.log(values);
+          const payload = {
+            "interviewDate": values.interviewDate,
+            "personId": personId,
+            "recipes": values.recipes.map(r => 
+              ({
+                "code": r.code,
+                "name": r.name,
+                "origin": r.origin,
+                "consumptionTime": r.consumptionTime,
+                "ingredients": r.ingredients.map(x => ({
+                  "foodId": "TODO: arthur",
+                  "portionServed": x.portionServed,
+                  "weightInGrams": x.weightInGrams,
+                  "portionResidue": x.portionResidue,
+                  "weigthInGramsResidue": x.weightInGrams,
+                  "source": x.source
+                }))
+              }))
+          }
         }}
       >
         <Grid container spacing={2} margin={4}>
@@ -287,23 +305,23 @@ export function InterviewForm({ personId }: { personId: number }) {
               Preparaciones
             </Typography>
           </Grid>
-          {foodFields.map((field, foodIndex) => {
-            const food = formContext.watch(`foods.${foodIndex}`);
-            const { consumptionTime, ingredients } = food;
+          {recipeFields.map((field, recipeIndex) => {
+            const recipe = formContext.watch(`recipes.${recipeIndex}`);
+            const { consumptionTime, ingredients } = recipe;
 
             return (
-              <Grid container key={foodIndex}>
+              <Grid container key={recipeIndex}>
                 <Grid size={5}>
                   <TextFieldElement
                     fullWidth
-                    name={`foods.${foodIndex}.preparationCode`}
+                    name={`recipes.${recipeIndex}.preparationCode`}
                     label="Código de forma de preparación"
                   />
                 </Grid>
                 <Grid size={6}>
                   <TextFieldElement
                     fullWidth
-                    name={`foods.${foodIndex}.preparationName`}
+                    name={`recipes.${recipeIndex}.preparationName`}
                     label="Nombre de la preparación"
                   />
                 </Grid>
@@ -315,9 +333,9 @@ export function InterviewForm({ personId }: { personId: number }) {
                     alignItems: "center",
                   }}
                 >
-                  {foodFields.length > 1 && (
+                  {recipeFields.length > 1 && (
                     <Tooltip title="Eliminar preparación">
-                      <Fab size="small" onClick={() => remove(foodIndex)}>
+                      <Fab size="small" onClick={() => remove(recipeIndex)}>
                         <DeleteIcon />
                       </Fab>
                     </Tooltip>
@@ -332,7 +350,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                     onChange={(value) => {
                       if (value !== null) {
                         formContext.setValue(
-                          `foods.${foodIndex}.consumptionTime`,
+                          `recipes.${recipeIndex}.consumptionTime`,
                           value
                         );
                       }
@@ -356,7 +374,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                 <Grid size={4}>
                   <SelectElement
                     label="Procedencia"
-                    name={`foods.${foodIndex}.origin`}
+                    name={`recipes.${recipeIndex}.origin`}
                     options={[
                       {
                         id: "1",
@@ -413,7 +431,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                       key={ingredientIndex}
                       ingredient={ingredient}
                       ingredientIndex={ingredientIndex}
-                      foodIndex={foodIndex}
+                      recipeIndex={recipeIndex}
                       ingredientsLength={ingredients.length}
                       removeIngredient={removeIngredient}
                     />
@@ -423,7 +441,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                       variant="outlined"
                       startIcon={<AddIcon />}
                       fullWidth
-                      onClick={() => handleAddIngredient(foodIndex)}
+                      onClick={() => handleAddIngredient(recipeIndex)}
                     >
                       Agregar ingrediente
                     </Button>
@@ -442,7 +460,7 @@ export function InterviewForm({ personId }: { personId: number }) {
               startIcon={<AddIcon />}
               fullWidth
               onClick={() => {
-                append(emptyFood);
+                append(emptyRecipe);
               }}
             >
               Agregar preparación

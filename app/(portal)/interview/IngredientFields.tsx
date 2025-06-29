@@ -9,7 +9,7 @@ import useSWR from "swr";
 interface IngredientFieldsProps {
   ingredient: any;
   ingredientIndex: number;
-  foodIndex: number;
+  recipeIndex: number;
   ingredientsLength: number;
   removeIngredient: (foodIndex: number, ingredientIndex: number) => void;
 }
@@ -23,7 +23,7 @@ interface Food {
 export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   ingredient,
   ingredientIndex,
-  foodIndex,
+  recipeIndex: foodIndex,
   ingredientsLength,
   removeIngredient,
 }) => {
