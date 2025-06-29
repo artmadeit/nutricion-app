@@ -48,14 +48,12 @@ const schema = z.object({
     // TODO: andre hacer que campos coincidan con los del backend (ver swagger POST /interviews)
     // eso nos servira al momento que hagamos el submit como hemos hecho antes
     z.object({
-      // TODO: andre aca falta agregar mas campos
       code: z.string(),
       name: z.string(),
-      origin: z.string(), // TODO: use enum,
       consumptionTime: z.date(),
+      origin: z.string(), // TODO: use enum,
       ingredients: z.array(
         z.object({
-          // TODO: andre aca falta agregar mas campos
           portionServed: z.string(),
           portionResidue: z.string(),
           weightInGrams: z
@@ -137,9 +135,14 @@ const mealtime = (consumptionTime: Date) => {
 const emptyIngredient = {
   weightInGrams: 0,
   weigthInGramsResidue: 0,
+  portionServed: "",
+  portionResidue: "",        
+  source: ""
 };
 
 const emptyFood = {
+  code: "",
+  name: "",
   consumptionTime: new Date(2000, 0, 1, 12, 0, 0),
   origin: "",
   ingredients: [{ ...emptyIngredient }],
@@ -219,7 +222,7 @@ export function InterviewForm({ personId }: { personId: number }) {
         }}
       >
         <Grid container spacing={2} margin={4}>
-          <GeneralPersonData disabled={true}/>
+          <GeneralPersonData disabled />
           <Grid size={12}>
             <Typography
               variant="h5"
