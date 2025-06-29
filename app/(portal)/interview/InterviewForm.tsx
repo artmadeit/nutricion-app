@@ -25,7 +25,7 @@ import {
 } from "@mui/x-date-pickers";
 import { format } from "date-fns/format";
 import { es } from "date-fns/locale";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import {
   FormContainer,
@@ -37,6 +37,7 @@ import {
 import useSWR from "swr";
 import { z } from "zod";
 import { IngredientFields } from "./IngredientFields";
+import { api } from "@/app/(api)/api";
 
 const schema = z.object({
   code: z.string(),
@@ -54,6 +55,9 @@ const schema = z.object({
       origin: z.string(), // TODO: use enum,
       ingredients: z.array(
         z.object({
+          food: z.object({
+            id: z.number()
+          }),
           portionServed: z.string(),
           portionResidue: z.string(),
           weightInGrams: z
@@ -137,7 +141,8 @@ const emptyIngredient = {
   weigthInGramsResidue: 0,
   portionServed: "",
   portionResidue: "",
-  source: ""
+  source: "",
+  food: {id: 0}
 };
 
 const emptyRecipe = {
@@ -155,6 +160,7 @@ const defaultInterviewData = {
 };
 
 export function InterviewForm({ personId }: { personId: number }) {
+  const router = useRouter()
   const searchParams = useSearchParams();
   const interviewNumber = +(searchParams.get("number") || 1);
   const { data: person } = useSWR(personId ? `people/${personId}` : null);
@@ -217,10 +223,10 @@ export function InterviewForm({ personId }: { personId: number }) {
     <div>
       <FormContainer
         formContext={formContext}
-        onSuccess={(values) => {
+        onSuccess={async (values) => {
           const payload = {
             "interviewDate": values.interviewDate,
-            "personId": personId,
+            "personId": +personId,
             "recipes": values.recipes.map(r => 
               ({
                 "code": r.code,
@@ -228,7 +234,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                 "origin": r.origin,
                 "consumptionTime": r.consumptionTime,
                 "ingredients": r.ingredients.map(x => ({
-                  "foodId": "TODO: arthur",
+                  "foodId": x.food.id,
                   "portionServed": x.portionServed,
                   "weightInGrams": x.weightInGrams,
                   "portionResidue": x.portionResidue,
@@ -237,6 +243,10 @@ export function InterviewForm({ personId }: { personId: number }) {
                 }))
               }))
           }
+
+          await api.post(`/interviews`, payload);
+          alert("Entrevista guardada"); // TODO: andre mostrar el codigo (code) de la entrevista guardada, obtenerlo del response 
+          router.push(`/interviewed/${personId}`)
         }}
       >
         <Grid container spacing={2} margin={4}>
@@ -314,14 +324,14 @@ export function InterviewForm({ personId }: { personId: number }) {
                 <Grid size={5}>
                   <TextFieldElement
                     fullWidth
-                    name={`recipes.${recipeIndex}.preparationCode`}
+                    name={`recipes.${recipeIndex}.code`}
                     label="Código de forma de preparación"
                   />
                 </Grid>
                 <Grid size={6}>
                   <TextFieldElement
                     fullWidth
-                    name={`recipes.${recipeIndex}.preparationName`}
+                    name={`recipes.${recipeIndex}.name`}
                     label="Nombre de la preparación"
                   />
                 </Grid>

@@ -11,7 +11,7 @@ interface IngredientFieldsProps {
   ingredientIndex: number;
   recipeIndex: number;
   ingredientsLength: number;
-  removeIngredient: (foodIndex: number, ingredientIndex: number) => void;
+  removeIngredient: (recipeIndex: number, ingredientIndex: number) => void;
 }
 
 interface Food {
@@ -23,7 +23,7 @@ interface Food {
 export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   ingredient,
   ingredientIndex,
-  recipeIndex: foodIndex,
+  recipeIndex,
   ingredientsLength,
   removeIngredient,
 }) => {
@@ -56,7 +56,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
       <Grid size={3}>
         <TextField
           label="Código alimento tabla"
-          value={ingredient.foodIngredient?.code || "-"}
+          value={ingredient.food?.code || "-"}
           disabled
           fullWidth
         />
@@ -70,7 +70,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
             },
           }}
           label="Ingrediente (nombre del Alimento)"
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.foodIngredient`}
+          name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.food`}
           options={
             foods?._embedded?.foods.map((x) => ({
               id: x.id,
@@ -90,7 +90,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
       >
         {ingredientsLength > 1 && (
           <Tooltip title="Eliminar ingrediente">
-            <Fab size="small" onClick={() => removeIngredient(foodIndex, ingredientIndex)}>
+            <Fab size="small" onClick={() => removeIngredient(recipeIndex, ingredientIndex)}>
               <DeleteIcon />
             </Fab>
           </Tooltip>
@@ -99,14 +99,14 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
       <Grid size={6}>
         <TextFieldElement
           fullWidth
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.portionServed`}
+          name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.portionServed`}
           label="Porción servida (medida casera)"
         />
       </Grid>
       <Grid size={6}>
         <TextFieldElement
           fullWidth
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.weightInGrams`}
+          name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.weightInGrams`}
           label="Peso en gramos de la porción servida"
           required
           type="number"
@@ -115,14 +115,14 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
       <Grid size={6}>
         <TextFieldElement
           fullWidth
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.portionResidue`}
+          name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.portionResidue`}
           label="Residuo porción"
         />
       </Grid>
       <Grid size={6}>
         <TextFieldElement
           fullWidth
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.weigthInGramsResidue`}
+          name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.weigthInGramsResidue`}
           label="Peso en gramos del residuo de porción"
           type="number"
         />
@@ -139,7 +139,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
       <Grid size={6}>
         <SelectElement
           label="Fuente"
-          name={`foods.${foodIndex}.ingredients.${ingredientIndex}.source`}
+          name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.source`}
           options={[
             {
               id: "1",
