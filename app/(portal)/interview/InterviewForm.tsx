@@ -262,7 +262,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                 "portionServed": x.portionServed,
                 "weightInGrams": x.weightInGrams,
                 "portionResidue": x.portionResidue,
-                "weigthInGramsResidue": x.weightInGrams,
+                "weigthInGramsResidue": x.weigthInGramsResidue,
                 "source": x.source
               }))
             }))
