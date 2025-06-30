@@ -41,6 +41,7 @@ import useSWR from "swr";
 import { z } from "zod";
 import { emptyFood, IngredientFields, mapFoodToOption } from "./IngredientFields";
 
+// TODO: andre revisar los campos practicamente todos deben ser obligatorios
 const schema = z.object({
   code: z.string(),
   firstName: z.string().trim(),
@@ -195,11 +196,10 @@ export function InterviewForm({ personId }: { personId: number }) {
 
   useEffect(() => {
     if (interview) {
-      console.log(interview)
       formContext.reset({
         ...formContext.getValues(),
         interviewDate: parseDate(interview.interviewDate),
-        interviewNumber: interview.interviewNumber,
+        interviewNumber: String(interview.interviewNumber).padStart(3, "0"),
         recipes: interview.recipes.map((x: any) => ({
           code: x.code,
           name: x.name,
@@ -274,7 +274,12 @@ export function InterviewForm({ personId }: { personId: number }) {
             }))
           }
 
-          await api.post(`/interviews`, payload);
+          if(interview) {
+            await api.put(`/interviews/${interview.id}`, payload);
+          } else {
+            await api.post(`/interviews`, payload);
+          }
+          // TODO: andre revisar todos los alert()
           alert("Entrevista guardada"); // TODO: andre mostrar el codigo (code) de la entrevista guardada, obtenerlo del response 
           router.push(`/interviewed/${personId}`)
         }}
@@ -346,9 +351,10 @@ export function InterviewForm({ personId }: { personId: number }) {
             </Typography>
           </Grid>
           {recipeFields.map((field, recipeIndex) => {
-            const recipe = formContext.watch(`recipes.${recipeIndex}`);
-            const { consumptionTime, ingredients } = recipe;
-
+            // NOTE: we don't use destructuring here, it slows down the form
+            const consumptionTime = formContext.watch(`recipes.${recipeIndex}.consumptionTime`);
+            const ingredients = formContext.watch(`recipes.${recipeIndex}.ingredients`);
+            
             return (
               <Grid container key={recipeIndex}>
                 <Grid size={5}>
