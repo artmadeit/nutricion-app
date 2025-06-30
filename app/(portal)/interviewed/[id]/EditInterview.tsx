@@ -51,7 +51,7 @@ export function EditInterview({ id }: { id: number }) {
           },
         },
       ] as GridColDef<Interview>[]).map(withOutSorting),
-    [router]
+    [router, id]
   );
 
   if (!person) return <Loading />;

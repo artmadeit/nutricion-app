@@ -192,7 +192,7 @@ export function InterviewForm({ personId }: { personId: number }) {
         ...defaultInterviewData,
       });
     }
-  }, [person]);
+  }, [person, formContext]);
 
   useEffect(() => {
     if (interview) {
@@ -212,7 +212,7 @@ export function InterviewForm({ personId }: { personId: number }) {
         }))
       });
     }
-  }, [interview]);
+  }, [interview, formContext]);
 
   const {
     fields: recipeFields,
