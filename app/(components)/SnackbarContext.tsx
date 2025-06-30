@@ -1,3 +1,5 @@
+"use client";
+
 import { Snackbar } from "@mui/material";
 import React, { createContext } from "react";
 
@@ -29,6 +31,7 @@ export const SnackbarProvider = ({
         showMessage: showAlertMessage,
       }}
     >
+      {children}
       <Snackbar
         open={!!alertMessage}
         autoHideDuration={6000}

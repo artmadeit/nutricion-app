@@ -29,7 +29,7 @@ import { lightFormat } from "date-fns/lightFormat";
 import { format } from "date-fns/format";
 import { es } from "date-fns/locale";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import {
   FormContainer,
   SelectElement,
@@ -39,7 +39,12 @@ import {
 } from "react-hook-form-mui";
 import useSWR from "swr";
 import { z } from "zod";
-import { emptyFood, IngredientFields, mapFoodToOption } from "./IngredientFields";
+import {
+  emptyFood,
+  IngredientFields,
+  mapFoodToOption,
+} from "./IngredientFields";
+import { SnackbarContext } from "@/app/(components)/SnackbarContext";
 
 // TODO: andre revisar los campos practicamente todos deben ser obligatorios
 const schema = z.object({
@@ -56,11 +61,13 @@ const schema = z.object({
       origin: z.string(), // TODO: use enum,
       ingredients: z.array(
         z.object({
-          food: z.object({
-            id: z.number()
-          }).refine((food) => food.id > 0, {
-            message: "Debe seleccionar un alimento",
-          }),
+          food: z
+            .object({
+              id: z.number(),
+            })
+            .refine((food) => food.id > 0, {
+              message: "Debe seleccionar un alimento",
+            }),
           portionServed: z.string(),
           portionResidue: z.string(),
           weightInGrams: z
@@ -145,7 +152,7 @@ const emptyIngredient = {
   portionServed: "",
   portionResidue: "",
   source: "",
-  food: emptyFood
+  food: emptyFood,
 };
 
 const emptyRecipe = {
@@ -163,17 +170,24 @@ const defaultInterviewData = {
 };
 
 export function InterviewForm({ personId }: { personId: number }) {
-  const router = useRouter()
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const snackbar = useContext(SnackbarContext);
   const interviewPersonNumber = +(searchParams.get("number") || 1);
   const { data: person } = useSWR(personId ? `people/${personId}` : null);
-  const { data: interview } = useSWR(personId ? [
-    `interviews/search/findByPersonIdAndInterviewPersonNumber`, {
-      params: {
-        personId,
-        interviewPersonNumber,
-      },
-    }] : null);
+  const { data: interview } = useSWR(
+    personId
+      ? [
+          `interviews/search/findByPersonIdAndInterviewPersonNumber`,
+          {
+            params: {
+              personId,
+              interviewPersonNumber,
+            },
+          },
+        ]
+      : null
+  );
 
   const formContext = useForm({
     defaultValues: {
@@ -207,9 +221,9 @@ export function InterviewForm({ personId }: { personId: number }) {
           origin: x.origin,
           ingredients: x.ingredients.map((i: any) => ({
             ...i,
-            food: mapFoodToOption(i.food)
-          }))
-        }))
+            food: mapFoodToOption(i.food),
+          })),
+        })),
       });
     }
   }, [interview]);
@@ -245,7 +259,10 @@ export function InterviewForm({ personId }: { personId: number }) {
     const updatedIngredients = currentIngredients.filter(
       (_, index) => index !== ingredientIndex
     );
-    formContext.setValue(`recipes.${recipeIndex}.ingredients`, updatedIngredients);
+    formContext.setValue(
+      `recipes.${recipeIndex}.ingredients`,
+      updatedIngredients
+    );
   };
 
   if (!person) return <Loading />;
@@ -255,33 +272,32 @@ export function InterviewForm({ personId }: { personId: number }) {
         formContext={formContext}
         onSuccess={async (values) => {
           const payload = {
-            "interviewDate": lightFormat(values.interviewDate, "yyyy-MM-dd"),
-            "personId": +personId,
-            "recipes": values.recipes.map(r =>
-            ({
-              "code": r.code,
-              "name": r.name,
-              "origin": r.origin,
-              "consumptionTime": lightFormat(r.consumptionTime, "HH:mm:ss"),
-              "ingredients": r.ingredients.map(x => ({
-                "foodId": x.food.id,
-                "portionServed": x.portionServed,
-                "weightInGrams": x.weightInGrams,
-                "portionResidue": x.portionResidue,
-                "weigthInGramsResidue": x.weigthInGramsResidue,
-                "source": x.source
-              }))
-            }))
-          }
+            interviewDate: lightFormat(values.interviewDate, "yyyy-MM-dd"),
+            personId: +personId,
+            recipes: values.recipes.map((r) => ({
+              code: r.code,
+              name: r.name,
+              origin: r.origin,
+              consumptionTime: lightFormat(r.consumptionTime, "HH:mm:ss"),
+              ingredients: r.ingredients.map((x) => ({
+                foodId: x.food.id,
+                portionServed: x.portionServed,
+                weightInGrams: x.weightInGrams,
+                portionResidue: x.portionResidue,
+                weigthInGramsResidue: x.weigthInGramsResidue,
+                source: x.source,
+              })),
+            })),
+          };
 
-          if(interview) {
+          if (interview) {
             await api.put(`/interviews/${interview.id}`, payload);
           } else {
             await api.post(`/interviews`, payload);
           }
-          // TODO: andre revisar todos los alert()
-          alert("Entrevista guardada"); // TODO: andre mostrar el codigo (code) de la entrevista guardada, obtenerlo del response 
-          router.push(`/interviewed/${personId}`)
+          snackbar.showMessage("Entrevista guardada");
+          // TODO: andre mostrar el codigo (code) de la entrevista guardada, obtenerlo del response
+          router.push(`/interviewed/${personId}`);
         }}
       >
         <Grid container spacing={2} margin={4}>
@@ -352,9 +368,13 @@ export function InterviewForm({ personId }: { personId: number }) {
           </Grid>
           {recipeFields.map((field, recipeIndex) => {
             // NOTE: we don't use destructuring here, it slows down the form
-            const consumptionTime = formContext.watch(`recipes.${recipeIndex}.consumptionTime`);
-            const ingredients = formContext.watch(`recipes.${recipeIndex}.ingredients`);
-            
+            const consumptionTime = formContext.watch(
+              `recipes.${recipeIndex}.consumptionTime`
+            );
+            const ingredients = formContext.watch(
+              `recipes.${recipeIndex}.ingredients`
+            );
+
             return (
               <Grid container key={recipeIndex}>
                 <Grid size={5}>

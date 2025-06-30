@@ -1,14 +1,14 @@
 "use client";
 
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { es as dateFnsEs } from "date-fns/locale/es";
 
 import React from "react";
 import { SWRConfig } from "swr";
-import { api } from './(api)/api';
-import { AxiosRequestConfig } from 'axios';
-
+import { api } from "./(api)/api";
+import { AxiosRequestConfig } from "axios";
+import { SnackbarProvider } from "./(components)/SnackbarContext";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   const fetcher = (key: string | [string, AxiosRequestConfig]) => {
@@ -23,7 +23,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
         dateAdapter={AdapterDateFns}
         adapterLocale={dateFnsEs}
       >
-        {children}
+        <SnackbarProvider>{children}</SnackbarProvider>
       </LocalizationProvider>
     </SWRConfig>
   );
