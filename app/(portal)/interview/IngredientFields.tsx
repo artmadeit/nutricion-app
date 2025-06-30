@@ -47,17 +47,19 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
     }
   }, [ingredient])
 
-  const [searchTextDebounced] = useDebounce(
-    searchTextFood,
-    500
-  );
-  const { data: foods } = useSWR<Page<Food>>(searchTextDebounced? [
+  // TODO: andre probar instalar una libreria parece que esto trae errores
+  // const [searchTextDebounced] = useDebounce(
+  //   searchTextFood,
+  //   500
+  // );
+  // cambiar la busqueda  useSWR<Page<Food>>(searchTextFoodDebounced? ...revisar este commit fix: page size
+  const { data: foods } = useSWR<Page<Food>>(searchTextFood? [
     `/foods/search/findByNameContainsIgnoringCase`,
     {
       params: {
-        searchText: searchTextDebounced,
+        searchText: searchTextFood,
         page: 0,
-        pageSize: 20
+        size: 10
       },
     },
   ]: null);

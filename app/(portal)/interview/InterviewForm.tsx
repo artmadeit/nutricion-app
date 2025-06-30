@@ -70,7 +70,7 @@ const schema = z.object({
             .refine((val) => Number.isInteger(val * 10), {
               message: "Debe tener exactamente un decimal",
             }),
-          weigthInGramsResidue: z
+          weigthInGramsResidue: z // TODO: andre revisar, debe ser menor o igual a weightInGrams, en el pdf dice eso
             .number()
             .min(0.0)
             .max(999.9)

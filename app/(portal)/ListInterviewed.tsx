@@ -49,7 +49,7 @@ export default function ListInterviewed() {
     {
       params: {
         page: paginationModel.page,
-        pageSize: paginationModel.pageSize,
+        size: paginationModel.pageSize,
       },
     },
   ]);
