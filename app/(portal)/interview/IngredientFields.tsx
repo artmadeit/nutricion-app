@@ -250,19 +250,19 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
                 <TableRow>
                   <TableCell>{ingredient.food?.code ?? '-'}</TableCell>
                   <TableCell>{ingredient.food?.name ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.calcioMg ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.energiaKcal ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.fosforoMg ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.grasaTotalG ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.hierroMg ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.niacinaMg ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.potasioMg ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.proteinasG ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.riboflavinaMg ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.tiaminaMg ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.vitaminaAG ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.vitaminaCMg ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.zincMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.calcioMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.calcioMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.energiaKcal != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.energiaKcal).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.fosforoMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.fosforoMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.grasaTotalG != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.grasaTotalG).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.hierroMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.hierroMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.niacinaMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.niacinaMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.potasioMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.potasioMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.proteinasG != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.proteinasG).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.riboflavinaMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.riboflavinaMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.tiaminaMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.tiaminaMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.vitaminaAG != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.vitaminaAG).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.vitaminaCMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.vitaminaCMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.zincMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.zincMg).toFixed(2) : '-'}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -272,3 +272,6 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
     </React.Fragment>
   );
 };
+
+const getNutritionValue = (quantityConsumed: number, nutrition: number) => 
+  quantityConsumed * nutrition / 100.0;
