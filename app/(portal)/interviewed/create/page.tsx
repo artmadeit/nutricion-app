@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { SnackbarContext } from "@/app/(components)/SnackbarContext";
 
 // TODO: andre ver como reusar este schema para editar y crear interviewed
-export const schema = z.object({
+const schema = z.object({
   code: z
     .string()
     .trim()
