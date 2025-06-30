@@ -18,7 +18,7 @@ import useSWR from "swr";
 
 type Interview = {
   id: number;
-  interviewNumber: string,
+  interviewPersonNumber: string,
   interviewDate: Date,
 }
 
@@ -31,7 +31,7 @@ export function EditInterview({ id }: { id: number }) {
   const columns = useMemo(
     () => (
       [
-        { field: "interviewNumber", headerName: "Nro" },
+        { field: "interviewPersonNumber", headerName: "N° R24H" },
         { field: "interviewDate", headerName: "Fecha" },
         {
           field: "actions",
@@ -43,7 +43,7 @@ export function EditInterview({ id }: { id: number }) {
                 <GridActionsCellItem
                   icon={<SearchIcon />}
                   label="Ver"
-                  onClick={() => router.push(`/interview/${id}?number=${params.row.interviewNumber}`)}
+                  onClick={() => router.push(`/interview/${id}?number=${params.row.interviewPersonNumber}`)}
                   //This could be replaced with a Link**
                 />
               </Tooltip>,
@@ -84,6 +84,7 @@ export function EditInterview({ id }: { id: number }) {
               </Stack>
               <div style={{ height: "70vh" }}>
                 <DataGrid
+                  getRowId={row => row.interviewPersonNumber}
                   loading={isLoading}
                   columns={columns}
                   disableColumnFilter
