@@ -1,10 +1,12 @@
 import { Page } from "@/app/(api)/pagination";
 import useDebounce from "@/app/(components)/helpers/useDebounce";
+import { InfoOutlined } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Divider, Fab, Grid, TextField, Tooltip } from "@mui/material";
+import { Divider, Fab, Grid, IconButton, TextField, Tooltip, Dialog, DialogTitle, DialogContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
 import React, { useEffect } from "react";
 import { AutocompleteElement, SelectElement, TextFieldElement } from "react-hook-form-mui";
 import useSWR from "swr";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface IngredientFieldsProps {
   ingredient: any;
@@ -18,12 +20,24 @@ interface Food {
   id: number;
   code: string;
   name: string;
+  calcioMg: number;
+  energiaKcal: number;
+  fosforoMg: number;
+  grasaTotalG: number;
+  hierroMg: number;
+  niacinaMg: number;
+  potasioMg: number;
+  proteinasG: number;
+  riboflavinaMg: number;
+  tiaminaMg: number;
+  vitaminaAG: number;
+  vitaminaCMg: number;
+  zincMg: number;
 }
 
 export const mapFoodToOption = (x: Food) => ({
-  id: x.id,
   label: x.name,
-  code: x.code
+  ...x
 })
 
 export const emptyFood = { id: 0, label: "" }
@@ -42,7 +56,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
 
   const [searchTextFood, setSearchTextFood] = React.useState("");
   useEffect(() => {
-    if(ingredient) {
+    if (ingredient) {
       setSearchTextFood(ingredient.food?.label)
     }
   }, [ingredient])
@@ -53,7 +67,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   //   500
   // );
   // cambiar la busqueda  useSWR<Page<Food>>(searchTextFoodDebounced? ...revisar este commit fix: page size
-  const { data: foods } = useSWR<Page<Food>>(searchTextFood? [
+  const { data: foods } = useSWR<Page<Food>>(searchTextFood ? [
     `/foods/search/findByNameContainsIgnoringCase`,
     {
       params: {
@@ -62,7 +76,9 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
         size: 10
       },
     },
-  ]: null);
+  ] : null);
+
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   return (
     <React.Fragment>
@@ -154,7 +170,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           fullWidth
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={4}>
         <SelectElement
           label="Fuente"
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.source`}
@@ -187,9 +203,72 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           fullWidth
         />
       </Grid>
+      <Grid size={2}>
+        <Tooltip title="Ver información nutricional">
+          <IconButton color="primary" onClick={() => setOpenDialog(true)}>
+            <InfoOutlined />
+          </IconButton>
+        </Tooltip>
+      </Grid>
       <Grid size={12}>
         <Divider />
       </Grid>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          Información nutricional
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenDialog(false)}
+            sx={{ color: (theme) => theme.palette.grey[500] }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Código</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Calcio (mg)</TableCell>
+                  <TableCell>Energía (kcal)</TableCell>
+                  <TableCell>Fósforo (mg)</TableCell>
+                  <TableCell>Grasa total (g)</TableCell>
+                  <TableCell>Hierro (mg)</TableCell>
+                  <TableCell>Niacina (mg)</TableCell>
+                  <TableCell>Potasio (mg)</TableCell>
+                  <TableCell>Proteínas (g)</TableCell>
+                  <TableCell>Riboflavina (mg)</TableCell>
+                  <TableCell>Tiamina (mg)</TableCell>
+                  <TableCell>Vitamina A (g)</TableCell>
+                  <TableCell>Vitamina C (mg)</TableCell>
+                  <TableCell>Zinc (mg)</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>{ingredient.food?.code ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.name ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.calcioMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.energiaKcal ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.fosforoMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.grasaTotalG ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.hierroMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.niacinaMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.potasioMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.proteinasG ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.riboflavinaMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.tiaminaMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.vitaminaAG ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.vitaminaCMg ?? '-'}</TableCell>
+                  <TableCell>{ingredient.food?.zincMg ?? '-'}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+      </Dialog>
     </React.Fragment>
   );
 };
