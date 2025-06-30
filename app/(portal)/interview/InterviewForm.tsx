@@ -60,32 +60,38 @@ const schema = z.object({
       consumptionTime: z.date(),
       origin: z.string(), // TODO: use enum,
       ingredients: z.array(
-        z.object({
-          food: z
-            .object({
-              id: z.number(),
-            })
-            .refine((food) => food.id > 0, {
-              message: "Debe seleccionar un alimento",
-            }),
-          portionServed: z.string(),
-          portionResidue: z.string(),
-          weightInGrams: z
-            .number()
-            .min(0.1)
-            .max(999.9)
-            .refine((val) => Number.isInteger(val * 10), {
-              message: "Debe tener exactamente un decimal",
-            }),
-          weigthInGramsResidue: z // TODO: andre revisar, debe ser menor o igual a weightInGrams, en el pdf dice eso
-            .number()
-            .min(0.0)
-            .max(999.9)
-            .refine((val) => Number.isInteger(val * 10), {
-              message: "Debe tener exactamente un decimal",
-            }),
-          source: z.string(),
-        })
+        z
+          .object({
+            food: z
+              .object({
+                id: z.number(),
+              })
+              .refine((food) => food.id > 0, {
+                message: "Debe seleccionar un alimento",
+              }),
+            portionServed: z.string(),
+            portionResidue: z.string(),
+            weightInGrams: z
+              .number()
+              .min(0.1)
+              .max(999.9)
+              .refine((val) => Number.isInteger(val * 10), {
+                message: "Debe tener exactamente un decimal",
+              }),
+            weigthInGramsResidue: z // TODO: andre revisar, debe ser menor o igual a weightInGrams, en el pdf dice eso
+              .number()
+              .min(0.0)
+              .max(999.9)
+              .refine((val) => Number.isInteger(val * 10), {
+                message: "Debe tener exactamente un decimal",
+              }),
+            source: z.string(),
+          })
+          .refine((data) => data.weigthInGramsResidue <= data.weightInGrams, {
+            message:
+              "El peso de residuo en gramos debe ser menor o igual al peso en gramos.",
+            path: ["weigthInGramsResidue"],
+          })
       ),
     })
   ),
