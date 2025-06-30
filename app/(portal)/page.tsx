@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import ListInterviewed from "./ListInterviewed";
 
 export default function Home() {
   return (
-    <>
+    <Suspense>
       <ListInterviewed />
-    </>
+    </Suspense>
   );
 }

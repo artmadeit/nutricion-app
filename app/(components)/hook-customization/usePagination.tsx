@@ -1,6 +1,10 @@
 import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+/**
+ * If use this function wrap your component
+ * with a <Suspense>
+ */
 export const usePagination = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
