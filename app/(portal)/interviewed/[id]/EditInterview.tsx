@@ -4,6 +4,7 @@ import { api } from "@/app/(api)/api";
 import GeneralPersonData from "@/app/(components)/GeneralPersonData";
 import { withOutSorting } from "@/app/(components)/helpers/withOutSorting";
 import Loading from "@/app/(components)/Loading";
+import { SnackbarContext } from "@/app/(components)/SnackbarContext";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, Fab, Grid, Stack, Tooltip, Typography } from "@mui/material";
@@ -11,7 +12,7 @@ import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { esES } from "@mui/x-data-grid/locales";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { FormContainer } from "react-hook-form-mui";
 import useSWR from "swr";
 
@@ -23,7 +24,7 @@ type Interview = {
 }
 
 export function EditInterview({ id }: { id: number }) {
-
+  const snackbar = useContext(SnackbarContext)
   const router = useRouter()
   const { data: person } = useSWR(id ? `people/${id}` : null);
   const { data: interviews, isLoading } = useSWR(id ? `interviews?personId=${id}` : null);
@@ -62,7 +63,7 @@ export function EditInterview({ id }: { id: number }) {
         defaultValues={person}
         onSuccess={async (values) => {
           await api.put(`/people/${id}`, values);
-          alert("Información de la persona guardada"); // TODO: andre usar snackbar copiar y pegar snackbar.ts de farmacia
+          snackbar.showMessage("Información de la persona guardada");          
           router.push("/")
         }}>
         <Grid container spacing={2} margin={2}>
