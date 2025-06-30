@@ -2,7 +2,7 @@ import { Page } from "@/app/(api)/pagination";
 import useDebounce from "@/app/(components)/helpers/useDebounce";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Divider, Fab, Grid, TextField, Tooltip } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { AutocompleteElement, SelectElement, TextFieldElement } from "react-hook-form-mui";
 import useSWR from "swr";
 
@@ -20,6 +20,14 @@ interface Food {
   name: string;
 }
 
+export const mapFoodToOption = (x: Food) => ({
+  id: x.id,
+  label: x.name,
+  code: x.code
+})
+
+export const emptyFood = { id: 0, label: "" }
+
 export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   ingredient,
   ingredientIndex,
@@ -33,14 +41,26 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   ).toFixed(1);
 
   const [searchTextFood, setSearchTextFood] = React.useState("");
+  useEffect(() => {
+    if(ingredient) {
+      setSearchTextFood(ingredient.food?.label)
+    }
+  }, [ingredient])
 
   const [searchTextDebounced] = useDebounce(
     searchTextFood,
     500
   );
-  const { data: foods } = useSWR<Page<Food>>([
-    `/foods/search/findByNameContainsIgnoringCase?searchText=${encodeURIComponent(searchTextDebounced)}&page=0&size=20`
-  ]);
+  const { data: foods } = useSWR<Page<Food>>(searchTextDebounced? [
+    `/foods/search/findByNameContainsIgnoringCase`,
+    {
+      params: {
+        searchText: searchTextDebounced,
+        page: 0,
+        pageSize: 20
+      },
+    },
+  ]: null);
 
   return (
     <React.Fragment>
@@ -72,11 +92,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           label="Ingrediente (nombre del Alimento)"
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.food`}
           options={
-            foods?._embedded?.foods.map((x) => ({
-              id: x.id,
-              label: x.name,
-              code: x.code
-            })) || []
+            foods?._embedded?.foods.map(mapFoodToOption) || []
           }
         />
       </Grid>

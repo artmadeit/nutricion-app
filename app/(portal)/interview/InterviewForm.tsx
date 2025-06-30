@@ -39,7 +39,7 @@ import {
 } from "react-hook-form-mui";
 import useSWR from "swr";
 import { z } from "zod";
-import { IngredientFields } from "./IngredientFields";
+import { emptyFood, IngredientFields, mapFoodToOption } from "./IngredientFields";
 
 const schema = z.object({
   code: z.string(),
@@ -57,6 +57,8 @@ const schema = z.object({
         z.object({
           food: z.object({
             id: z.number()
+          }).refine((food) => food.id > 0, {
+            message: "Debe seleccionar un alimento",
           }),
           portionServed: z.string(),
           portionResidue: z.string(),
@@ -142,7 +144,7 @@ const emptyIngredient = {
   portionServed: "",
   portionResidue: "",
   source: "",
-  food: { id: 0 }
+  food: emptyFood
 };
 
 const emptyRecipe = {
@@ -193,16 +195,20 @@ export function InterviewForm({ personId }: { personId: number }) {
 
   useEffect(() => {
     if (interview) {
+      console.log(interview)
       formContext.reset({
         ...formContext.getValues(),
         interviewDate: parseDate(interview.interviewDate),
         interviewNumber: interview.interviewNumber,
-        recipes: interview.recipes.map((i: any) => ({
-          code: i.code,
-          name: i.name,
-          consumptionTime: parseTime(i.consumptionTime),
-          origin: i.origin,
-          ingredients: i.ingredients
+        recipes: interview.recipes.map((x: any) => ({
+          code: x.code,
+          name: x.name,
+          consumptionTime: parseTime(x.consumptionTime),
+          origin: x.origin,
+          ingredients: x.ingredients.map((i: any) => ({
+            ...i,
+            food: mapFoodToOption(i.food)
+          }))
         }))
       });
     }
