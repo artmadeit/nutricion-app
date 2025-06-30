@@ -5,7 +5,9 @@ import React, { createContext } from "react";
 
 export const SnackbarContext = createContext({
   message: "",
-  showMessage: (message: string) => {},
+  showMessage: (message: string) => {
+    console.log(message)
+  },
 });
 
 export const SnackbarProvider = ({
@@ -15,10 +17,7 @@ export const SnackbarProvider = ({
 }) => {
   const [alertMessage, setAlertMessage] = React.useState<string>("");
 
-  const handleClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleClose = () => {
     setAlertMessage("");
   };
 
