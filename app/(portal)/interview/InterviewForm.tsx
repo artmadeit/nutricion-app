@@ -1,7 +1,9 @@
 "use client";
 
+import { api } from "@/app/(api)/api";
 import GeneralPersonData from "@/app/(components)/GeneralPersonData";
 import Loading from "@/app/(components)/Loading";
+import { parseDate, parseTime } from "@/app/date";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -23,6 +25,7 @@ import {
   renderTimeViewClock,
   TimePicker,
 } from "@mui/x-date-pickers";
+import { lightFormat } from "date-fns/lightFormat";
 import { format } from "date-fns/format";
 import { es } from "date-fns/locale";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -37,7 +40,6 @@ import {
 import useSWR from "swr";
 import { z } from "zod";
 import { IngredientFields } from "./IngredientFields";
-import { api } from "@/app/(api)/api";
 
 const schema = z.object({
   code: z.string(),
@@ -46,8 +48,6 @@ const schema = z.object({
   interviewDate: z.date(),
   interviewNumber: z.string(),
   recipes: z.array(
-    // TODO: andre hacer que campos coincidan con los del backend (ver swagger POST /interviews)
-    // eso nos servira al momento que hagamos el submit como hemos hecho antes
     z.object({
       code: z.string(),
       name: z.string(),
@@ -142,7 +142,7 @@ const emptyIngredient = {
   portionServed: "",
   portionResidue: "",
   source: "",
-  food: {id: 0}
+  food: { id: 0 }
 };
 
 const emptyRecipe = {
@@ -154,7 +154,7 @@ const emptyRecipe = {
 };
 
 const defaultInterviewData = {
-  interviewNumber: "001",
+  interviewNumber: "-",
   interviewDate: new Date(),
   recipes: [emptyRecipe],
 };
@@ -162,8 +162,15 @@ const defaultInterviewData = {
 export function InterviewForm({ personId }: { personId: number }) {
   const router = useRouter()
   const searchParams = useSearchParams();
-  const interviewNumber = +(searchParams.get("number") || 1);
+  const interviewPersonNumber = +(searchParams.get("number") || 1);
   const { data: person } = useSWR(personId ? `people/${personId}` : null);
+  const { data: interview } = useSWR(personId ? [
+    `interviews/search/findByPersonIdAndInterviewPersonNumber`, {
+      params: {
+        personId,
+        interviewPersonNumber,
+      },
+    }] : null);
 
   const formContext = useForm({
     defaultValues: {
@@ -183,6 +190,23 @@ export function InterviewForm({ personId }: { personId: number }) {
       });
     }
   }, [person]);
+
+  useEffect(() => {
+    if (interview) {
+      formContext.reset({
+        ...formContext.getValues(),
+        interviewDate: parseDate(interview.interviewDate),
+        interviewNumber: interview.interviewNumber,
+        recipes: interview.recipes.map((i: any) => ({
+          code: i.code,
+          name: i.name,
+          consumptionTime: parseTime(i.consumptionTime),
+          origin: i.origin,
+          ingredients: i.ingredients
+        }))
+      });
+    }
+  }, [interview]);
 
   const {
     fields: recipeFields,
@@ -225,23 +249,23 @@ export function InterviewForm({ personId }: { personId: number }) {
         formContext={formContext}
         onSuccess={async (values) => {
           const payload = {
-            "interviewDate": values.interviewDate,
+            "interviewDate": lightFormat(values.interviewDate, "yyyy-MM-dd"),
             "personId": +personId,
-            "recipes": values.recipes.map(r => 
-              ({
-                "code": r.code,
-                "name": r.name,
-                "origin": r.origin,
-                "consumptionTime": r.consumptionTime,
-                "ingredients": r.ingredients.map(x => ({
-                  "foodId": x.food.id,
-                  "portionServed": x.portionServed,
-                  "weightInGrams": x.weightInGrams,
-                  "portionResidue": x.portionResidue,
-                  "weigthInGramsResidue": x.weightInGrams,
-                  "source": x.source
-                }))
+            "recipes": values.recipes.map(r =>
+            ({
+              "code": r.code,
+              "name": r.name,
+              "origin": r.origin,
+              "consumptionTime": lightFormat(r.consumptionTime, "HH:mm:ss"),
+              "ingredients": r.ingredients.map(x => ({
+                "foodId": x.food.id,
+                "portionServed": x.portionServed,
+                "weightInGrams": x.weightInGrams,
+                "portionResidue": x.portionResidue,
+                "weigthInGramsResidue": x.weightInGrams,
+                "source": x.source
               }))
+            }))
           }
 
           await api.post(`/interviews`, payload);
@@ -271,11 +295,11 @@ export function InterviewForm({ personId }: { personId: number }) {
           </Grid>
           <Grid size={6}>
             <FormControl fullWidth>
-              <InputLabel id="interviewNumber">N° R24H</InputLabel>
+              <InputLabel id="interviewPersonNumber">N° R24H</InputLabel>
               <Select
-                labelId="interviewNumber"
-                id="interviewNumber"
-                value={interviewNumber}
+                labelId="interviewPersonNumber"
+                id="interviewPersonNumber"
+                value={interviewPersonNumber}
                 label="N° R24H"
                 disabled
               >

@@ -43,7 +43,7 @@ export function EditInterview({ id }: { id: number }) {
                 <GridActionsCellItem
                   icon={<SearchIcon />}
                   label="Ver"
-                  onClick={() => router.push(`/interview/${params.id}`)}
+                  onClick={() => router.push(`/interview/${id}?number=${params.row.interviewNumber}`)}
                   //This could be replaced with a Link**
                 />
               </Tooltip>,
