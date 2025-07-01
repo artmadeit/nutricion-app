@@ -29,7 +29,7 @@ import { lightFormat } from "date-fns/lightFormat";
 import { format } from "date-fns/format";
 import { es } from "date-fns/locale";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { Suspense, useContext, useEffect } from "react";
 import {
   FormContainer,
   SelectElement,
@@ -183,14 +183,14 @@ export function InterviewForm({ personId }: { personId: number }) {
   const { data: interview } = useSWR(
     personId
       ? [
-          `interviews/search/findByPersonIdAndInterviewPersonNumber`,
-          {
-            params: {
-              personId,
-              interviewPersonNumber,
-            },
+        `interviews/search/findByPersonIdAndInterviewPersonNumber`,
+        {
+          params: {
+            personId,
+            interviewPersonNumber,
           },
-        ]
+        },
+      ]
       : null
   );
 
@@ -270,280 +270,284 @@ export function InterviewForm({ personId }: { personId: number }) {
     );
   };
 
-  if (!person) return <Loading />;
   return (
-    <div>
-      <FormContainer
-        formContext={formContext}
-        onSuccess={async (values) => {
-          const payload = {
-            interviewDate: lightFormat(values.interviewDate, "yyyy-MM-dd"),
-            personId: +personId,
-            recipes: values.recipes.map((r) => ({
-              code: r.code,
-              name: r.name,
-              origin: r.origin,
-              consumptionTime: lightFormat(r.consumptionTime, "HH:mm:ss"),
-              ingredients: r.ingredients.map((x) => ({
-                foodId: x.food.id,
-                portionServed: x.portionServed,
-                weightInGrams: x.weightInGrams,
-                portionResidue: x.portionResidue,
-                weigthInGramsResidue: x.weigthInGramsResidue,
-                source: x.source,
-              })),
-            })),
-          };
+    <Suspense>
+      {
+        !person ? <Loading /> :
+          <div>
+            <FormContainer
+              formContext={formContext}
+              onSuccess={async (values) => {
+                const payload = {
+                  interviewDate: lightFormat(values.interviewDate, "yyyy-MM-dd"),
+                  personId: +personId,
+                  recipes: values.recipes.map((r) => ({
+                    code: r.code,
+                    name: r.name,
+                    origin: r.origin,
+                    consumptionTime: lightFormat(r.consumptionTime, "HH:mm:ss"),
+                    ingredients: r.ingredients.map((x) => ({
+                      foodId: x.food.id,
+                      portionServed: x.portionServed,
+                      weightInGrams: x.weightInGrams,
+                      portionResidue: x.portionResidue,
+                      weigthInGramsResidue: x.weigthInGramsResidue,
+                      source: x.source,
+                    })),
+                  })),
+                };
 
-          if (interview) {
-            await api.put(`/interviews/${interview.id}`, payload);
-          } else {
-            await api.post(`/interviews`, payload);
-          }
-          snackbar.showMessage("Entrevista guardada");
-          // TODO: andre mostrar el codigo (code) de la entrevista guardada, obtenerlo del response
-          router.push(`/interviewed/${personId}`);
-        }}
-      >
-        <Grid container spacing={2} margin={4}>
-          <GeneralPersonData disabled />
-          <Grid size={12}>
-            <Typography
-              variant="h5"
-              gutterBottom
-              style={{ paddingTop: "20px" }}
-            >
-              Datos recordatorio - R24H
-            </Typography>
-          </Grid>
-          <Grid size={6}>
-            <TextFieldElement
-              fullWidth
-              name="interviewNumber"
-              label="Número de entrevista"
-              required
-              disabled
-            />
-          </Grid>
-          <Grid size={6}>
-            <FormControl fullWidth>
-              <InputLabel id="interviewPersonNumber">N° R24H</InputLabel>
-              <Select
-                labelId="interviewPersonNumber"
-                id="interviewPersonNumber"
-                value={interviewPersonNumber}
-                label="N° R24H"
-                disabled
-              >
-                <MenuItem value={1}>Primero</MenuItem>
-                <MenuItem value={2}>Segundo</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid size={6}>
-            <DatePicker
-              sx={{ width: "100%" }}
-              value={interviewDate}
-              label="Fecha de encuesta"
-              onChange={(value: Date | null) => {
-                if (value !== null) {
-                  formContext.setValue("interviewDate", value);
+                if (interview) {
+                  await api.put(`/interviews/${interview.id}`, payload);
+                } else {
+                  await api.post(`/interviews`, payload);
                 }
+                snackbar.showMessage("Entrevista guardada");
+                // TODO: andre mostrar el codigo (code) de la entrevista guardada, obtenerlo del response
+                router.push(`/interviewed/${personId}`);
               }}
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextField
-              label="Día"
-              variant="outlined"
-              value={day}
-              disabled
-              fullWidth
-            />
-          </Grid>
-          <Grid size={12}>
-            <Typography
-              variant="h5"
-              gutterBottom
-              style={{ paddingTop: "20px" }}
             >
-              Preparaciones
-            </Typography>
-          </Grid>
-          {recipeFields.map((field, recipeIndex) => {
-            // NOTE: we don't use destructuring here, it slows down the form
-            const consumptionTime = formContext.watch(
-              `recipes.${recipeIndex}.consumptionTime`
-            );
-            const ingredients = formContext.watch(
-              `recipes.${recipeIndex}.ingredients`
-            );
-
-            return (
-              <Grid container key={recipeIndex}>
-                <Grid size={5}>
-                  <TextFieldElement
-                    fullWidth
-                    name={`recipes.${recipeIndex}.code`}
-                    label="Código de forma de preparación"
-                  />
+              <Grid container spacing={2} margin={4}>
+                <GeneralPersonData disabled />
+                <Grid size={12}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    style={{ paddingTop: "20px" }}
+                  >
+                    Datos recordatorio - R24H
+                  </Typography>
                 </Grid>
                 <Grid size={6}>
                   <TextFieldElement
                     fullWidth
-                    name={`recipes.${recipeIndex}.name`}
-                    label="Nombre de la preparación"
+                    name="interviewNumber"
+                    label="Número de entrevista"
+                    required
+                    disabled
                   />
                 </Grid>
-                <Grid
-                  size={1}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "end",
-                    alignItems: "center",
-                  }}
-                >
-                  {recipeFields.length > 1 && (
-                    <Tooltip title="Eliminar preparación">
-                      <Fab size="small" onClick={() => remove(recipeIndex)}>
-                        <DeleteIcon />
-                      </Fab>
-                    </Tooltip>
-                  )}
+                <Grid size={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="interviewPersonNumber">N° R24H</InputLabel>
+                    <Select
+                      labelId="interviewPersonNumber"
+                      id="interviewPersonNumber"
+                      value={interviewPersonNumber}
+                      label="N° R24H"
+                      disabled
+                    >
+                      <MenuItem value={1}>Primero</MenuItem>
+                      <MenuItem value={2}>Segundo</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
-                <Grid size={4}>
-                  <TimePicker
-                    label="Hora de consumo"
-                    ampm
+
+                <Grid size={6}>
+                  <DatePicker
                     sx={{ width: "100%" }}
-                    value={consumptionTime}
-                    onChange={(value) => {
+                    value={interviewDate}
+                    label="Fecha de encuesta"
+                    onChange={(value: Date | null) => {
                       if (value !== null) {
-                        formContext.setValue(
-                          `recipes.${recipeIndex}.consumptionTime`,
-                          value
-                        );
+                        formContext.setValue("interviewDate", value);
                       }
                     }}
-                    viewRenderers={{
-                      hours: renderTimeViewClock,
-                      minutes: renderTimeViewClock,
-                      seconds: renderTimeViewClock,
-                    }}
                   />
                 </Grid>
-                <Grid size={4}>
+                <Grid size={6}>
                   <TextField
-                    label="Tiempo de comida"
+                    label="Día"
                     variant="outlined"
-                    value={mealtime(consumptionTime)}
+                    value={day}
                     disabled
                     fullWidth
                   />
                 </Grid>
-                <Grid size={4}>
-                  <SelectElement
-                    label="Procedencia"
-                    name={`recipes.${recipeIndex}.origin`}
-                    options={[
-                      {
-                        id: "1",
-                        label: "Casa",
-                      },
-                      {
-                        id: "2",
-                        label: "Vecino",
-                      },
-                      {
-                        id: "3",
-                        label: "Familiar",
-                      },
-                      {
-                        id: "4",
-                        label: "Comedor popular",
-                      },
-                      {
-                        id: "5",
-                        label: "Ambulante",
-                      },
-                      {
-                        id: "6",
-                        label: "Kiosko",
-                      },
-                      {
-                        id: "7",
-                        label: "Tienda/super",
-                      },
-                      {
-                        id: "77",
-                        label: "Otro", // TODO: add observation field
-                      },
-                      {
-                        id: "99",
-                        label: "No sabe",
-                      },
-                    ]}
-                    fullWidth
-                  />
+                <Grid size={12}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    style={{ paddingTop: "20px" }}
+                  >
+                    Preparaciones
+                  </Typography>
                 </Grid>
-                <Grid container>
-                  <Grid size={12}>
-                    <Typography
-                      variant="h6"
-                      gutterBottom
-                      style={{ paddingTop: "20px" }}
-                    >
-                      Ingredientes
-                    </Typography>
-                  </Grid>
-                  {ingredients.map((ingredient, ingredientIndex) => (
-                    <IngredientFields
-                      key={ingredientIndex}
-                      ingredient={ingredient}
-                      ingredientIndex={ingredientIndex}
-                      recipeIndex={recipeIndex}
-                      ingredientsLength={ingredients.length}
-                      removeIngredient={removeIngredient}
-                    />
-                  ))}
-                  <Grid size={12}>
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      fullWidth
-                      onClick={() => handleAddIngredient(recipeIndex)}
-                    >
-                      Agregar ingrediente
-                    </Button>
-                  </Grid>
+                {recipeFields.map((field, recipeIndex) => {
+                  // NOTE: we don't use destructuring here, it slows down the form
+                  const consumptionTime = formContext.watch(
+                    `recipes.${recipeIndex}.consumptionTime`
+                  );
+                  const ingredients = formContext.watch(
+                    `recipes.${recipeIndex}.ingredients`
+                  );
+
+                  return (
+                    <Grid container key={recipeIndex}>
+                      <Grid size={5}>
+                        <TextFieldElement
+                          fullWidth
+                          name={`recipes.${recipeIndex}.code`}
+                          label="Código de forma de preparación"
+                        />
+                      </Grid>
+                      <Grid size={6}>
+                        <TextFieldElement
+                          fullWidth
+                          name={`recipes.${recipeIndex}.name`}
+                          label="Nombre de la preparación"
+                        />
+                      </Grid>
+                      <Grid
+                        size={1}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "end",
+                          alignItems: "center",
+                        }}
+                      >
+                        {recipeFields.length > 1 && (
+                          <Tooltip title="Eliminar preparación">
+                            <Fab size="small" onClick={() => remove(recipeIndex)}>
+                              <DeleteIcon />
+                            </Fab>
+                          </Tooltip>
+                        )}
+                      </Grid>
+                      <Grid size={4}>
+                        <TimePicker
+                          label="Hora de consumo"
+                          ampm
+                          sx={{ width: "100%" }}
+                          value={consumptionTime}
+                          onChange={(value) => {
+                            if (value !== null) {
+                              formContext.setValue(
+                                `recipes.${recipeIndex}.consumptionTime`,
+                                value
+                              );
+                            }
+                          }}
+                          viewRenderers={{
+                            hours: renderTimeViewClock,
+                            minutes: renderTimeViewClock,
+                            seconds: renderTimeViewClock,
+                          }}
+                        />
+                      </Grid>
+                      <Grid size={4}>
+                        <TextField
+                          label="Tiempo de comida"
+                          variant="outlined"
+                          value={mealtime(consumptionTime)}
+                          disabled
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid size={4}>
+                        <SelectElement
+                          label="Procedencia"
+                          name={`recipes.${recipeIndex}.origin`}
+                          options={[
+                            {
+                              id: "1",
+                              label: "Casa",
+                            },
+                            {
+                              id: "2",
+                              label: "Vecino",
+                            },
+                            {
+                              id: "3",
+                              label: "Familiar",
+                            },
+                            {
+                              id: "4",
+                              label: "Comedor popular",
+                            },
+                            {
+                              id: "5",
+                              label: "Ambulante",
+                            },
+                            {
+                              id: "6",
+                              label: "Kiosko",
+                            },
+                            {
+                              id: "7",
+                              label: "Tienda/super",
+                            },
+                            {
+                              id: "77",
+                              label: "Otro", // TODO: add observation field
+                            },
+                            {
+                              id: "99",
+                              label: "No sabe",
+                            },
+                          ]}
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid container>
+                        <Grid size={12}>
+                          <Typography
+                            variant="h6"
+                            gutterBottom
+                            style={{ paddingTop: "20px" }}
+                          >
+                            Ingredientes
+                          </Typography>
+                        </Grid>
+                        {ingredients.map((ingredient, ingredientIndex) => (
+                          <IngredientFields
+                            key={ingredientIndex}
+                            ingredient={ingredient}
+                            ingredientIndex={ingredientIndex}
+                            recipeIndex={recipeIndex}
+                            ingredientsLength={ingredients.length}
+                            removeIngredient={removeIngredient}
+                          />
+                        ))}
+                        <Grid size={12}>
+                          <Button
+                            variant="outlined"
+                            startIcon={<AddIcon />}
+                            fullWidth
+                            onClick={() => handleAddIngredient(recipeIndex)}
+                          >
+                            Agregar ingrediente
+                          </Button>
+                        </Grid>
+                      </Grid>
+                      <Grid size={12}>
+                        <Divider />
+                      </Grid>
+                    </Grid>
+                  );
+                })}
+
+                <Grid size={12}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    fullWidth
+                    onClick={() => {
+                      append(emptyRecipe);
+                    }}
+                  >
+                    Agregar preparación
+                  </Button>
                 </Grid>
                 <Grid size={12}>
-                  <Divider />
+                  <Button type="submit" variant="contained">
+                    Guardar
+                  </Button>
                 </Grid>
               </Grid>
-            );
-          })}
-
-          <Grid size={12}>
-            <Button
-              variant="outlined"
-              startIcon={<AddIcon />}
-              fullWidth
-              onClick={() => {
-                append(emptyRecipe);
-              }}
-            >
-              Agregar preparación
-            </Button>
-          </Grid>
-          <Grid size={12}>
-            <Button type="submit" variant="contained">
-              Guardar
-            </Button>
-          </Grid>
-        </Grid>
-      </FormContainer>
-    </div>
+            </FormContainer>
+          </div>
+      }
+    </Suspense>
   );
 }
