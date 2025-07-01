@@ -5,6 +5,7 @@ import GeneralPersonData from "@/app/(components)/GeneralPersonData";
 import { withOutSorting } from "@/app/(components)/helpers/withOutSorting";
 import Loading from "@/app/(components)/Loading";
 import { SnackbarContext } from "@/app/(components)/SnackbarContext";
+import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, Fab, Grid, Stack, Tooltip, Typography } from "@mui/material";
@@ -15,6 +16,8 @@ import { useRouter } from "next/navigation";
 import { useContext, useMemo } from "react";
 import { FormContainer } from "react-hook-form-mui";
 import useSWR from "swr";
+import { schema } from "../create/personSchema";
+
 
 
 type Interview = {
@@ -61,6 +64,7 @@ export function EditInterview({ id }: { id: number }) {
       <Typography variant="h4">Editar persona</Typography>
       <FormContainer
         defaultValues={person}
+        resolver={zodResolver(schema)}
         onSuccess={async (values) => {
           await api.put(`/people/${id}`, values);
           snackbar.showMessage("Información de la persona guardada");          

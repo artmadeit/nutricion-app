@@ -4,22 +4,13 @@ import GeneralPersonData from "@/app/(components)/GeneralPersonData";
 import { Button, Grid, Typography } from "@mui/material";
 import React, { useContext } from "react";
 import { FormContainer, useForm } from "react-hook-form-mui";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/app/(api)/api";
 import { useRouter } from "next/navigation";
 import { SnackbarContext } from "@/app/(components)/SnackbarContext";
+import { schema } from "./personSchema";
 
 // TODO: andre ver como reusar este schema para editar y crear interviewed
-export const schema = z.object({
-  code: z
-    .string()
-    .trim()
-    .min(6)
-    .max(6, { message: "Must be 5 or fewer characters long" }),
-  firstName: z.string().trim(),
-  lastName: z.string().trim(),
-});
 
 export default function Interviewed() {
   const snackbar = useContext(SnackbarContext);

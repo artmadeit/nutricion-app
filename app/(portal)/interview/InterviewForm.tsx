@@ -45,12 +45,11 @@ import {
   mapFoodToOption,
 } from "./IngredientFields";
 import { SnackbarContext } from "@/app/(components)/SnackbarContext";
+import { schemaObject } from "../interviewed/create/personSchema";
 
 // TODO: andre revisar los campos practicamente todos deben ser obligatorios
 const schema = z.object({
-  code: z.string(),
-  firstName: z.string().trim(),
-  lastName: z.string().trim(),
+  ...schemaObject,
   interviewDate: z.date(),
   interviewNumber: z.string(),
   recipes: z.array(
