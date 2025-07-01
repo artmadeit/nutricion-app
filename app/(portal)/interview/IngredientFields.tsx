@@ -20,7 +20,9 @@ interface Food {
   code: string;
   name: string;
   calcioMg: number;
+  fibra: number;
   energiaKcal: number;
+  carbohidratog: number;
   fosforoMg: number;
   grasaTotalG: number;
   hierroMg: number;
@@ -230,19 +232,21 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
                 <TableRow>
                   <TableCell>Código</TableCell>
                   <TableCell>Nombre</TableCell>
-                  <TableCell>Calcio (mg)</TableCell>
                   <TableCell>Energía (kcal)</TableCell>
-                  <TableCell>Fósforo (mg)</TableCell>
-                  <TableCell>Grasa total (g)</TableCell>
-                  <TableCell>Hierro (mg)</TableCell>
-                  <TableCell>Niacina (mg)</TableCell>
-                  <TableCell>Potasio (mg)</TableCell>
                   <TableCell>Proteínas (g)</TableCell>
-                  <TableCell>Riboflavina (mg)</TableCell>
-                  <TableCell>Tiamina (mg)</TableCell>
-                  <TableCell>Vitamina A (g)</TableCell>
-                  <TableCell>Vitamina C (mg)</TableCell>
+                  <TableCell>Grasa totales (g)</TableCell>
+                  <TableCell>Carbohidratos disponibles (g)</TableCell>
+                  <TableCell>Fibra (g)</TableCell>
+                  <TableCell>Calcio (mg)</TableCell>                  
+                  <TableCell>Fósforo (mg)</TableCell>
                   <TableCell>Zinc (mg)</TableCell>
+                  <TableCell>Potasio (mg)</TableCell>
+                  <TableCell>Hierro (mg)</TableCell>
+                  <TableCell>Vitamina A (g)</TableCell>
+                  <TableCell>Tiamina (mg)</TableCell>
+                  <TableCell>Riboflavina (mg)</TableCell>
+                  <TableCell>Niacina (mg)</TableCell>                          
+                  <TableCell>Vitamina C (mg)</TableCell>                  
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -250,6 +254,8 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
                   <TableCell>{ingredient.food?.code ?? '-'}</TableCell>
                   <TableCell>{ingredient.food?.name ?? '-'}</TableCell>
                   <TableCell>{ingredient.food?.calcioMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.calcioMg).toFixed(2) : '-'}</TableCell>
+                  <TableCell>{ingredient.food?.carbohidratog != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.carbohidratog).toFixed(2): '-'}</TableCell>
+                  <TableCell>{ingredient.food?.fibra !=null ? getNutritionValue(Number(quantityConsumed), ingredient.food.fibra).toFixed(2): '-'}</TableCell>
                   <TableCell>{ingredient.food?.energiaKcal != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.energiaKcal).toFixed(2) : '-'}</TableCell>
                   <TableCell>{ingredient.food?.fosforoMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.fosforoMg).toFixed(2) : '-'}</TableCell>
                   <TableCell>{ingredient.food?.grasaTotalG != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.grasaTotalG).toFixed(2) : '-'}</TableCell>
