@@ -44,7 +44,7 @@ export default function GeneralPersonData({
         <TextFieldElement
           fullWidth
           name="lastName"
-          label="Apellido"
+          label="Apellidos"
           required
           disabled={disabled}
         />

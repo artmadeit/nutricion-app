@@ -60,7 +60,7 @@ export default function ListInterviewed() {
         [
           { field: "code", headerName: "Código" },
           { field: "firstName", headerName: "Nombre" },
-          { field: "lastName", headerName: "Apellido" },
+          { field: "lastName", headerName: "Apellidos" },
           {
             field: "actions",
             type: "actions",
@@ -117,7 +117,7 @@ export default function ListInterviewed() {
             headers={[
               { label: "Código", key: "code" },
               { label: "Nombre", key: "firstName" },
-              { label: "Apellido", key: "lastName" },
+              { label: "Apellidos", key: "lastName" },
             ]}
             filename="interviewed.csv"
           >
