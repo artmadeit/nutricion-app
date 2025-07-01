@@ -15,7 +15,7 @@ import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { esES } from "@mui/x-data-grid/locales";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useQueryState } from 'nuqs';
+import { useQueryState } from "nuqs";
 import React from "react";
 import useSWR from "swr";
 import { Page } from "../(api)/pagination";
@@ -41,7 +41,7 @@ export default function ListInterviewed() {
   const { paginationModel, setPaginationModel } = usePagination();
   const [searchText, setSearchText] = useQueryState("searchText", {
     defaultValue: "",
-    throttleMs: 500
+    throttleMs: 500,
   });
 
   const { data: people, isLoading } = useSWR<Page<Interviewed>>([
@@ -59,8 +59,8 @@ export default function ListInterviewed() {
       (
         [
           { field: "code", headerName: "Código" },
-          { field: "firstName", headerName: "Nombre" },
-          { field: "lastName", headerName: "Apellidos" },
+          { field: "firstName", headerName: "Nombre", minWidth: 200 },
+          { field: "lastName", headerName: "Apellidos", minWidth: 200 },
           {
             field: "actions",
             type: "actions",
@@ -72,7 +72,7 @@ export default function ListInterviewed() {
                     icon={<SearchIcon />}
                     label="Ver"
                     onClick={() => router.push("/interviewed/" + params.id)}
-                  //This could be replaced with a Link**
+                    //This could be replaced with a Link**
                   />
                 </Tooltip>,
               ];
