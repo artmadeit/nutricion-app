@@ -74,7 +74,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
       params: {
         searchText: searchTextFood,
         page: 0,
-        size: 10
+        size: 50,
       },
     },
   ] : null);
