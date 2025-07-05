@@ -47,17 +47,16 @@ import {
 import { SnackbarContext } from "@/app/(components)/SnackbarContext";
 import { schemaObject } from "../interviewed/create/personSchema";
 
-// TODO: andre revisar los campos practicamente todos deben ser obligatorios
 const schema = z.object({
   ...schemaObject,
   interviewDate: z.date(),
   interviewNumber: z.string(),
   recipes: z.array(
     z.object({
-      code: z.string(),
-      name: z.string(),
+      code: z.string().nonempty(),
+      name: z.string().nonempty(),
       consumptionTime: z.date(),
-      origin: z.string(), // TODO: use enum,
+      origin: z.string().nonempty(), // TODO: use enum,
       ingredients: z.array(
         z
           .object({
@@ -84,7 +83,7 @@ const schema = z.object({
               .refine((val) => Number.isInteger(val * 10), {
                 message: "Debe tener exactamente un decimal",
               }),
-            source: z.string(),
+            source: z.string().trim().nonempty(),
           })
           .refine((data) => data.weigthInGramsResidue <= data.weightInGrams, {
             message:
@@ -323,7 +322,6 @@ export function InterviewForm({ personId }: { personId: number }) {
                     fullWidth
                     name="interviewNumber"
                     label="Número de entrevista"
-                    required
                     disabled
                   />
                 </Grid>
@@ -389,6 +387,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                           fullWidth
                           name={`recipes.${recipeIndex}.code`}
                           label="Código de forma de preparación"
+                          required
                         />
                       </Grid>
                       <Grid size={6}>
@@ -396,6 +395,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                           fullWidth
                           name={`recipes.${recipeIndex}.name`}
                           label="Nombre de la preparación"
+                          required
                         />
                       </Grid>
                       <Grid

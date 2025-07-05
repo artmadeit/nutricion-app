@@ -10,8 +10,6 @@ import { useRouter } from "next/navigation";
 import { SnackbarContext } from "@/app/(components)/SnackbarContext";
 import { schema } from "./personSchema";
 
-// TODO: andre ver como reusar este schema para editar y crear interviewed
-
 export default function Interviewed() {
   const snackbar = useContext(SnackbarContext);
 

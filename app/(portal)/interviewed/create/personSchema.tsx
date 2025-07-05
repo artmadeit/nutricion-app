@@ -4,10 +4,9 @@ export const schemaObject = {
   code: z
     .string()
     .trim()
-    .min(6)
-    .max(6, { message: "Must be 5 or fewer characters long" }),
-  firstName: z.string().trim(),
-  lastName: z.string().trim(),
+    .length(6),
+  firstName: z.string().trim().nonempty(),
+  lastName: z.string().trim().nonempty(),
 };
 
 export const schema = z.object(schemaObject);

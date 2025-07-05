@@ -108,6 +108,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
               setSearchTextFood(newInputValue);
             },
           }}
+          required
           label="Ingrediente (nombre del Alimento)"
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.food`}
           options={
@@ -160,6 +161,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.weigthInGramsResidue`}
           label="Peso en gramos del residuo de porción"
           type="number"
+          required
         />
       </Grid>
       <Grid size={6}>
@@ -175,6 +177,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
         <SelectElement
           label="Fuente"
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.source`}
+          required
           options={[
             {
               id: "1",
