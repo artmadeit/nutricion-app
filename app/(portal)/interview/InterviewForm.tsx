@@ -38,7 +38,7 @@ import {
   useForm,
 } from "react-hook-form-mui";
 import useSWR from "swr";
-import { z } from "zod";
+import { z } from "@/app/i18n/i18next";
 import {
   emptyFood,
   IngredientFields,
@@ -56,7 +56,7 @@ const schema = z.object({
       code: z.string().nonempty(),
       name: z.string().nonempty(),
       consumptionTime: z.date(),
-      origin: z.string().nonempty(), // TODO: use enum,
+      origin: z.string().nonempty("Campo requerido"), // TODO: use enum,
       ingredients: z.array(
         z
           .object({
@@ -76,14 +76,14 @@ const schema = z.object({
               .refine((val) => Number.isInteger(val * 10), {
                 message: "Debe tener exactamente un decimal",
               }),
-            weigthInGramsResidue: z // TODO: andre revisar, debe ser menor o igual a weightInGrams, en el pdf dice eso
+            weigthInGramsResidue: z
               .number()
               .min(0.0)
               .max(999.9)
               .refine((val) => Number.isInteger(val * 10), {
                 message: "Debe tener exactamente un decimal",
               }),
-            source: z.string().trim().nonempty(),
+            source: z.string().trim().nonempty("Campo requerido"),
           })
           .refine((data) => data.weigthInGramsResidue <= data.weightInGrams, {
             message:
