@@ -31,6 +31,7 @@ import { es } from "date-fns/locale";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useContext, useEffect } from "react";
 import {
+  AutocompleteElement,
   FormContainer,
   SelectElement,
   TextFieldElement,
@@ -46,6 +47,7 @@ import {
 } from "./IngredientFields";
 import { SnackbarContext } from "@/app/(components)/SnackbarContext";
 import { schemaObject } from "../interviewed/create/personSchema";
+import { preparationFormsAndDrinks } from "./[id]/preparations";
 
 const schema = z.object({
   ...schemaObject,
@@ -383,19 +385,45 @@ export function InterviewForm({ personId }: { personId: number }) {
                   return (
                     <Grid container key={recipeIndex}>
                       <Grid size={5}>
-                        <TextFieldElement
-                          fullWidth
+                        <AutocompleteElement
+                          autocompleteProps={{
+                            freeSolo: true,
+                            onChange: (_event, value) => {
+                              if(value) {
+                                const option = preparationFormsAndDrinks.find(x => x.code === value)
+                                if(option) {
+                                  formContext.setValue(`recipes.${recipeIndex}.name`, option.name)
+                                }
+                              }
+                            }
+                          }}
+                          required
                           name={`recipes.${recipeIndex}.code`}
                           label="Código de forma de preparación"
-                          required
+                          options={
+                            preparationFormsAndDrinks.map(x => x.code)
+                          }
                         />
                       </Grid>
                       <Grid size={6}>
-                        <TextFieldElement
-                          fullWidth
+                      <AutocompleteElement
+                          autocompleteProps={{
+                            freeSolo: true,
+                            onChange: (_event, value) => {
+                              if(value) {
+                                const option = preparationFormsAndDrinks.find(x => x.name === value)
+                                if(option) {
+                                  formContext.setValue(`recipes.${recipeIndex}.code`, option.code)
+                                }
+                              }
+                            }
+                          }}
+                          required
                           name={`recipes.${recipeIndex}.name`}
                           label="Nombre de la preparación"
-                          required
+                          options={
+                            preparationFormsAndDrinks.map(x => x.name)
+                          }
                         />
                       </Grid>
                       <Grid
