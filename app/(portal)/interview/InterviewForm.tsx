@@ -3,11 +3,14 @@
 import { api } from "@/app/(api)/api";
 import GeneralPersonData from "@/app/(components)/GeneralPersonData";
 import Loading from "@/app/(components)/Loading";
+import { SnackbarContext } from "@/app/(components)/SnackbarContext";
 import { parseDate, parseTime } from "@/app/date";
+import { z } from "@/app/i18n/i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
+  Autocomplete,
   Divider,
   Fab,
   FormControl,
@@ -25,29 +28,27 @@ import {
   renderTimeViewClock,
   TimePicker,
 } from "@mui/x-date-pickers";
-import { lightFormat } from "date-fns/lightFormat";
+import { isValid } from "date-fns";
 import { format } from "date-fns/format";
+import { lightFormat } from "date-fns/lightFormat";
 import { es } from "date-fns/locale";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useContext, useEffect } from "react";
 import {
-  AutocompleteElement,
   FormContainer,
   SelectElement,
   TextFieldElement,
   useFieldArray,
-  useForm,
+  useForm
 } from "react-hook-form-mui";
 import useSWR from "swr";
-import { z } from "@/app/i18n/i18next";
+import { schemaObject } from "../interviewed/create/personSchema";
+import { preparationFormsAndDrinks } from "./[id]/preparations";
 import {
   emptyFood,
   IngredientFields,
   mapFoodToOption,
 } from "./IngredientFields";
-import { SnackbarContext } from "@/app/(components)/SnackbarContext";
-import { schemaObject } from "../interviewed/create/personSchema";
-import { preparationFormsAndDrinks } from "./[id]/preparations";
 
 const schema = z.object({
   ...schemaObject,
@@ -244,7 +245,7 @@ export function InterviewForm({ personId }: { personId: number }) {
   });
 
   const interviewDate = formContext.watch("interviewDate");
-  const day = interviewDate
+  const day = interviewDate && isValid(interviewDate)
     ? format(interviewDate, "eeee", { locale: es })
     : "";
 
@@ -381,49 +382,58 @@ export function InterviewForm({ personId }: { personId: number }) {
                   const ingredients = formContext.watch(
                     `recipes.${recipeIndex}.ingredients`
                   );
+                  const code = formContext.watch(
+                    `recipes.${recipeIndex}.code`
+                  );
+                  const name = formContext.watch(
+                    `recipes.${recipeIndex}.name`
+                  );
 
                   return (
                     <Grid container key={recipeIndex}>
                       <Grid size={5}>
-                        <AutocompleteElement
-                          autocompleteProps={{
-                            freeSolo: true,
-                            onChange: (_event, value) => {
-                              if(value) {
-                                const option = preparationFormsAndDrinks.find(x => x.code === value)
-                                if(option) {
-                                  formContext.setValue(`recipes.${recipeIndex}.name`, option.name)
-                                }
+                        <Autocomplete
+                          value={code}
+                          inputValue={code}
+                          onInputChange={(_event, value) => {
+                            formContext.setValue(`recipes.${recipeIndex}.code`, value)
+                          }}
+                          onChange={(_event, value) => {
+                            if (value) {
+                              const option = preparationFormsAndDrinks.find(x => x.code === value)
+                              if (option) {
+                                formContext.setValue(`recipes.${recipeIndex}.name`, option.name)
                               }
                             }
                           }}
-                          required
-                          name={`recipes.${recipeIndex}.code`}
-                          label="Código de forma de preparación"
-                          options={
-                            preparationFormsAndDrinks.map(x => x.code)
-                          }
+                          id={`recipes.${recipeIndex}.code`}
+                          options={preparationFormsAndDrinks.map(x => x.code)}
+                          freeSolo
+                          renderInput={(params) =>
+                            <TextField required {...params}
+                              label="Código de forma de preparación"
+                            />}
                         />
                       </Grid>
                       <Grid size={6}>
-                      <AutocompleteElement
-                          autocompleteProps={{
-                            freeSolo: true,
-                            onChange: (_event, value) => {
-                              if(value) {
-                                const option = preparationFormsAndDrinks.find(x => x.name === value)
-                                if(option) {
-                                  formContext.setValue(`recipes.${recipeIndex}.code`, option.code)
-                                }
+                        <Autocomplete
+                          value={name}
+                          inputValue={name}
+                          onInputChange={(_event, value) => {
+                            formContext.setValue(`recipes.${recipeIndex}.name`, value)
+                          }}
+                          onChange={(_event, value) => {
+                            if (value) {
+                              const option = preparationFormsAndDrinks.find(x => x.name === value)
+                              if (option) {
+                                formContext.setValue(`recipes.${recipeIndex}.code`, option.code)
                               }
                             }
                           }}
-                          required
-                          name={`recipes.${recipeIndex}.name`}
-                          label="Nombre de la preparación"
-                          options={
-                            preparationFormsAndDrinks.map(x => x.name)
-                          }
+                          id={`recipes.${recipeIndex}.name`}
+                          options={preparationFormsAndDrinks.map(x => x.name)}
+                          freeSolo
+                          renderInput={(params) => <TextField required {...params} label="Nombre de la preparación" />}
                         />
                       </Grid>
                       <Grid
