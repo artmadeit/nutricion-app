@@ -29,7 +29,7 @@ type Interview = {
 export function EditInterview({ id }: { id: number }) {
   const snackbar = useContext(SnackbarContext)
   const router = useRouter()
-  const { data: person } = useSWR(id ? `people/${id}` : null);
+  const { data: person, mutate } = useSWR(id ? `people/${id}` : null);
   const { data: interviews, isLoading } = useSWR(id ? `interviews?personId=${id}` : null);
 
   const columns = useMemo(
@@ -67,6 +67,7 @@ export function EditInterview({ id }: { id: number }) {
         resolver={zodResolver(schema)}
         onSuccess={async (values) => {
           await api.put(`/people/${id}`, values);
+          mutate();
           snackbar.showMessage("Información de la persona guardada");          
           router.push("/")
         }}>
