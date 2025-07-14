@@ -26,7 +26,7 @@ type Interview = {
   interviewDate: Date,
 }
 
-export function EditInterview({ id }: { id: number }) {
+export function EditInterviewed({ id }: { id: number }) {
   const snackbar = useContext(SnackbarContext)
   const router = useRouter()
   const { data: person, mutate } = useSWR(id ? `people/${id}` : null);

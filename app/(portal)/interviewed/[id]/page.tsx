@@ -1,8 +1,8 @@
-import { EditInterview } from "./EditInterview";
+import { EditInterviewed } from "./EditInterviewed";
 
 async function EditInterviewPage({ params }: { params: Promise<{ id: number }> }) {
   const { id } = await params;
-  return <EditInterview id={id}/>
+  return <EditInterviewed id={id}/>
 }
 
 export default EditInterviewPage;
