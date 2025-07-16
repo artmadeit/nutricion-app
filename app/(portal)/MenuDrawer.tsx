@@ -4,7 +4,7 @@ import * as React from "react";
 import {
   AppBar,
   Box,
-  Button,
+  // Button,
   CssBaseline,
   Divider,
   Drawer,
@@ -14,14 +14,14 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem,
+  // Menu,
+  // MenuItem,
   Toolbar,
-  Typography,
+  // Typography,
 } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
+// import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
-import { AccountCircle } from "@mui/icons-material";
+// import { AccountCircle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Link from "next/link";
@@ -30,20 +30,20 @@ const drawerWidth = 240;
 
 export default function MenuDrawer({ children }: React.PropsWithChildren<unknown>) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  // const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
 
-  const handleLogout = () => {
-    setAnchorEl(null);
-  };
+  // const handleLogout = () => {
+  //   setAnchorEl(null);
+  // };
 
   const handleDrawerOpen = () => {
     setMobileOpen(!mobileOpen);
@@ -96,7 +96,7 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<unknown
           >
             <MenuIcon />
           </IconButton>
-          <div>
+          {/* <div>
             <Typography variant="h6" noWrap component="div">
               nutricion app
             </Typography>
@@ -121,7 +121,7 @@ export default function MenuDrawer({ children }: React.PropsWithChildren<unknown
                 Cerrar Sesión
               </MenuItem>
             </Menu>
-          </div>
+          </div> */}
         </Toolbar>
       </AppBar>
       <Box
