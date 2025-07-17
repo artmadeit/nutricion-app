@@ -10,9 +10,18 @@ export default function PortalLayout({
 }) {
   return (
     <Providers>
-      <MenuDrawer>
-        <Box sx={{ p: 2 }}>{children}</Box>
-      </MenuDrawer>
+      <Box
+        sx={{
+          padding: { xs: "0px", sm: "20px" },
+          "& .mui-1v5u2yv": {
+            padding: "0px",
+          },
+        }}
+      >
+        <MenuDrawer>
+          <Box sx={{ p: 2 }}>{children}</Box>
+        </MenuDrawer>
+      </Box>
     </Providers>
   );
 }
