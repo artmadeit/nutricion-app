@@ -55,6 +55,7 @@ const schema = z.object({
   ...schemaObject,
   interviewDate: z.date(),
   interviewNumber: z.string(),
+  isHoliday: z.string(),
   recipes: z.array(
     z.object({
       code: z.string().nonempty(),
@@ -174,6 +175,7 @@ const emptyRecipe = {
 const defaultInterviewData = {
   interviewNumber: "-",
   interviewDate: new Date(),
+  isHoliday: "NO",
   recipes: [emptyRecipe],
 };
 
@@ -203,6 +205,24 @@ export function InterviewForm({ personId }: { personId: number }) {
     },
     resolver: zodResolver(schema),
   });
+
+  const interviewDate = formContext.watch("interviewDate");
+  
+  // Fetch holiday data based on interviewDate
+  const formattedDate = interviewDate && isValid(interviewDate) 
+    ? lightFormat(interviewDate, "yyyy-MM-dd") 
+    : null;
+  
+  const { data: holidayData } = useSWR(
+    formattedDate ? `/is-holiday?date=${formattedDate}` : null
+  );
+
+  // Update isHoliday when holiday data changes
+  useEffect(() => {
+    if (holidayData !== undefined) {
+      formContext.setValue("isHoliday", holidayData? "YES": "NO");
+    }
+  }, [holidayData, formContext]);
 
   useEffect(() => {
     if (person) {
@@ -245,7 +265,6 @@ export function InterviewForm({ personId }: { personId: number }) {
     name: "recipes",
   });
 
-  const interviewDate = formContext.watch("interviewDate");
   const day =
     interviewDate && isValid(interviewDate)
       ? format(interviewDate, "eeee", { locale: es })
@@ -371,14 +390,14 @@ export function InterviewForm({ personId }: { personId: number }) {
               <Grid size={6}>
                 <RadioButtonGroup
                   label="¿Es feriado?"
-                  name=""
+                  name="isHoliday"
                   options={[
                     {
-                      id: "1",
+                      id: "YES",
                       label: "Si",
                     },
                     {
-                      id: 2,
+                      id: "NO",
                       label: "No",
                     },
                   ]}
