@@ -15,10 +15,7 @@ interface IngredientFieldsProps {
   removeIngredient: (recipeIndex: number, ingredientIndex: number) => void;
 }
 
-interface Food {
-  id: number;
-  code: string;
-  name: string;
+interface NutritionProperties {
   calcioMg: number;
   fibra: number;
   energiaKcal: number;
@@ -34,6 +31,14 @@ interface Food {
   vitaminaAG: number;
   vitaminaCMg: number;
   zincMg: number;
+}
+
+type NutritionProperty = keyof NutritionProperties;
+
+interface Food extends NutritionProperties {
+  id: number;
+  code: string;
+  name: string;
 }
 
 export const mapFoodToOption = (x: Food) => ({
@@ -106,7 +111,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
             onInputChange: (_event, newInputValue) => {
               setSearchTextFood(newInputValue);
             },
-            getOptionKey: (option) => typeof option === 'string'? option: option.id
+            getOptionKey: (option) => typeof option === 'string' ? option : option.id
           }}
           required
           label="Ingrediente (nombre del Alimento)"
@@ -235,42 +240,22 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
                 <TableRow>
                   <TableCell>Código</TableCell>
                   <TableCell>Nombre</TableCell>
-                  <TableCell>Energía (kcal)</TableCell>
-                  <TableCell>Proteínas (g)</TableCell>
-                  <TableCell>Grasa totales (g)</TableCell>
-                  <TableCell>Carbohidratos disponibles (g)</TableCell>
-                  <TableCell>Fibra (g)</TableCell>
-                  <TableCell>Calcio (mg)</TableCell>                  
-                  <TableCell>Fósforo (mg)</TableCell>
-                  <TableCell>Zinc (mg)</TableCell>
-                  <TableCell>Potasio (mg)</TableCell>
-                  <TableCell>Hierro (mg)</TableCell>
-                  <TableCell>Vitamina A (g)</TableCell>
-                  <TableCell>Tiamina (mg)</TableCell>
-                  <TableCell>Riboflavina (mg)</TableCell>
-                  <TableCell>Niacina (mg)</TableCell>                          
-                  <TableCell>Vitamina C (mg)</TableCell>                  
+                  {
+                    foodTableNutritionCols.map(x => <TableCell key={x.id}>{x.displayName}</TableCell>)
+                  }
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableRow>
                   <TableCell>{ingredient.food?.code ?? '-'}</TableCell>
                   <TableCell>{ingredient.food?.name ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.calcioMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.calcioMg).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.carbohidratog != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.carbohidratog).toFixed(2): '-'}</TableCell>
-                  <TableCell>{ingredient.food?.fibra !=null ? getNutritionValue(Number(quantityConsumed), ingredient.food.fibra).toFixed(2): '-'}</TableCell>
-                  <TableCell>{ingredient.food?.energiaKcal != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.energiaKcal).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.fosforoMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.fosforoMg).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.grasaTotalG != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.grasaTotalG).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.hierroMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.hierroMg).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.niacinaMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.niacinaMg).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.potasioMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.potasioMg).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.proteinasG != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.proteinasG).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.riboflavinaMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.riboflavinaMg).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.tiaminaMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.tiaminaMg).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.vitaminaAG != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.vitaminaAG).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.vitaminaCMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.vitaminaCMg).toFixed(2) : '-'}</TableCell>
-                  <TableCell>{ingredient.food?.zincMg != null ? getNutritionValue(Number(quantityConsumed), ingredient.food.zincMg).toFixed(2) : '-'}</TableCell>
+                  {
+                    foodTableNutritionCols.map(x =>
+                      <TableCell key={x.id}>
+                        {formatNutritionValue(ingredient.food, Number(quantityConsumed), x.id)}
+                      </TableCell>
+                    )
+                  }
                 </TableRow>
               </TableBody>
             </Table>
@@ -281,5 +266,30 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   );
 };
 
-const getNutritionValue = (quantityConsumed: number, nutrition: number) => 
+export function formatNutritionValue(food: Food, quantityConsumed: number, nutritionProperty: NutritionProperty) {
+  return food?.[nutritionProperty] != null ? getNutritionValue(quantityConsumed, food[nutritionProperty]).toFixed(2) : '-'
+}
+
+export const foodTableNutritionCols: {
+  id: NutritionProperty;
+  displayName: string;
+}[] = [
+  { id: "calcioMg", displayName: "Energía (kcal)" },
+  { id: "carbohidratog", displayName: "Proteínas (g)" },
+  { id: "fibra", displayName: "Grasa totales (g)" },
+  { id: "energiaKcal", displayName: "Carbohidratos disponibles (g)" },
+  { id: "fosforoMg", displayName: "Fibra (g)" },
+  { id: "grasaTotalG", displayName: "Calcio (mg)" },
+  { id: "hierroMg", displayName: "Fósforo (mg)" },
+  { id: "niacinaMg", displayName: "Zinc (mg)" },
+  { id: "potasioMg", displayName: "Potasio (mg)" },
+  { id: "proteinasG", displayName: "Hierro (mg)" },
+  { id: "riboflavinaMg", displayName: "Vitamina A (g)" },
+  { id: "tiaminaMg", displayName: "Tiamina (mg)" },
+  { id: "vitaminaAG", displayName: "Riboflavina (mg)" },
+  { id: "vitaminaCMg", displayName: "Niacina (mg)" },
+  { id: "zincMg", displayName: "Vitamina C (mg)" }
+]
+
+const getNutritionValue = (quantityConsumed: number, nutrition: number) =>
   quantityConsumed * nutrition / 100.0;

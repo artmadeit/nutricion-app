@@ -24,6 +24,7 @@ import { Page } from "../(api)/pagination";
 import { withOutSorting } from "../(components)/helpers/withOutSorting";
 import { usePagination } from "../(components)/hook-customization/usePagination";
 import Loading from "../(components)/Loading";
+import { foodTableNutritionCols, formatNutritionValue } from "./interview/IngredientFields";
 
 
 type Interviewed = {
@@ -90,7 +91,13 @@ export default function ListInterviewed() {
   
   const getCsvData = async () => {
     const response = await api.get("/interviews/export")
-    return response.data
+    const csvData = response.data.map(({ food, ...rest}: any) => ({ 
+      ...rest, 
+      foodName: food.name, 
+      foodCode: food.code,
+      ...foodTableNutritionCols.reduce((prev, foodProp) => ({ ...prev, [foodProp.id]: formatNutritionValue(food, rest.quantityConsumed, foodProp.id) }), {})
+    }))
+    return csvData;
   }
 
   return (
@@ -121,9 +128,23 @@ export default function ListInterviewed() {
               { displayName: "Nombre de participante", id: "personFullName" },
               { displayName: "Fecha de la encuesta", id: "interviewDate" },
               { displayName: "N°R24H", id: "interviewPersonNumber" },
-              { displayName: "Día", id: "day" }
+              { displayName: "Día", id: "day" },
+              { displayName: "Hora de consumo", id: "recipeConsumptionTime" },
+              { displayName: "Procedencia", id: "recipeOrigin" },
+              { displayName: "Código de forma de preparación", id: "recipeCode" },
+              { displayName: "Nombre de preparación", id: "recipeName" },
+              { displayName: "Porción servida (medida casera)", id: "portionServed" },
+              { displayName: "Porción servida peso g", id: "weightInGrams" },
+              { displayName: "Residuo porción", id: "portionResidue" },
+              { displayName: "Residuo porción peso g", id: "weightInGramsResidue" },
+              { displayName: "Cantidad consumida peso g", id: "quantityConsumed" },
+              { displayName: "Código de fuente", id: "source" },
+              { displayName: "Ingrediente (nombre del alimento)", id: "foodName" },
+              { displayName: "Código alimento - tabla", id: "foodCode" },
+              ...foodTableNutritionCols
             ]}
             filename="entrevistas"
+            wrapColumnChar={`"`}
           >
             <Tooltip title="Descargar en CSV">
               <Fab aria-labelledby="add">
