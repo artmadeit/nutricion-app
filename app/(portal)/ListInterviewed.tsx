@@ -17,17 +17,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import React from "react";
+import CsvDownloader from 'react-csv-downloader';
 import useSWR from "swr";
+import { api } from "../(api)/api";
 import { Page } from "../(api)/pagination";
 import { withOutSorting } from "../(components)/helpers/withOutSorting";
 import { usePagination } from "../(components)/hook-customization/usePagination";
 import Loading from "../(components)/Loading";
-// import { CSVLink } from "react-csv";
-import dynamic from "next/dynamic";
 
-const CSVLink = dynamic(() => import("react-csv").then((mod) => mod.CSVLink), {
-  ssr: false,
-});
 
 type Interviewed = {
   id?: number;
@@ -72,7 +69,7 @@ export default function ListInterviewed() {
                     icon={<SearchIcon />}
                     label="Ver"
                     onClick={() => router.push("/interviewed/" + params.id)}
-                    //This could be replaced with a Link**
+                  //This could be replaced with a Link**
                   />
                 </Tooltip>,
               ];
@@ -90,7 +87,11 @@ export default function ListInterviewed() {
     setSearchText(searchText);
   };
 
-  const csvData = people?._embedded?.people || [];
+  
+  const getCsvData = async () => {
+    const response = await api.get("/interviews/export")
+    return response.data
+  }
 
   return (
     <Stack direction="column" spacing={2}>
@@ -112,21 +113,24 @@ export default function ListInterviewed() {
         </div>
 
         <div>
-          <CSVLink
-            data={csvData}
-            headers={[
-              { label: "Código", key: "code" },
-              { label: "Nombre", key: "firstName" },
-              { label: "Apellidos", key: "lastName" },
+          <CsvDownloader
+            datas={getCsvData}
+            columns={[
+              { displayName: "No encuesta", id: "interviewNumber" },
+              { displayName: "Código participante", id: "personCode" },
+              { displayName: "Nombre de participante", id: "personFullName" },
+              { displayName: "Fecha de la encuesta", id: "interviewDate" },
+              { displayName: "N°R24H", id: "interviewPersonNumber" },
+              { displayName: "Día", id: "day" }
             ]}
-            filename="interviewed.csv"
+            filename="entrevistas"
           >
             <Tooltip title="Descargar en CSV">
               <Fab aria-labelledby="add">
                 <FileDownload />
               </Fab>
             </Tooltip>
-          </CSVLink>
+          </CsvDownloader>
         </div>
       </Stack>
       <TextField
