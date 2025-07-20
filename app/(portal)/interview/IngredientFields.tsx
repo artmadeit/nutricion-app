@@ -106,9 +106,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
             onInputChange: (_event, newInputValue) => {
               setSearchTextFood(newInputValue);
             },
-            getOptionKey: (option) => {
-              console.log(option)
-              return typeof option === 'string'? option: option.id}
+            getOptionKey: (option) => typeof option === 'string'? option: option.id
           }}
           required
           label="Ingrediente (nombre del Alimento)"
