@@ -100,59 +100,24 @@ const schema = z.object({
   ),
 });
 
-const mealtimeOptions = [
-  {
-    id: "1",
-    label: "Desayuno",
-    startHour: 5,
-    endHour: 10,
-  },
-  {
-    id: "2",
-    label: "M. mañana",
-    startHour: 10,
-    endHour: 12,
-  },
-  {
-    id: "3",
-    label: "Almuerzo",
-    startHour: 12,
-    endHour: 15,
-  },
-  {
-    id: "4",
-    label: "M. tarde",
-    startHour: 15,
-    endHour: 18,
-  },
-  {
-    id: "5",
-    label: "Cena",
-    startHour: 18,
-    endHour: 22,
-  },
-  {
-    id: "6",
-    label: "M. noche",
-    startHour: 22,
-    endHour: 5,
-  },
-];
-
-const mealtime = (consumptionTime: Date) => {
-  if (!consumptionTime) return mealtimeOptions[0].label;
+export const mealtime = (consumptionTime: Date, isHoliday: boolean) => {
+  if (!consumptionTime) return "-";
 
   const hour = consumptionTime.getHours();
+  const minute = consumptionTime.getMinutes();
 
-  const mealTime = mealtimeOptions.find((option) => {
-    if (option.startHour > option.endHour) {
-      // Handle overnight case (M. noche)
-      return hour >= option.startHour || hour < option.endHour;
-    }
-    return hour >= option.startHour && hour < option.endHour;
-  });
+  if (isHoliday) {
+    if (hour < 9 || (hour === 9 && minute === 0)) return "Desayuno";
+  } else {
+    if (hour < 7 || (hour === 7 && minute === 0)) return "Desayuno";
+  }
+  if (hour >= 10 && hour <= 12) return "Media Mañana";
+  if (hour >= 13 && hour <= 15) return "Almuerzo";
+  if (hour >= 15 && hour <= 18) return "Media tarde";
+  if (hour >= 18 && hour <= 21 && (hour !== 21 || minute === 0)) return "Cena";
+  if ((hour === 21 && minute > 0) || (hour > 21 && hour < 24)) return "Medianoche";
 
-  return mealTime?.label || mealtimeOptions[0].label;
+  return "-";
 };
 
 const emptyIngredient = {
@@ -207,6 +172,7 @@ export function InterviewForm({ personId }: { personId: number }) {
   });
 
   const interviewDate = formContext.watch("interviewDate");
+  const isHoliday = formContext.watch("isHoliday");
   
   // Fetch holiday data based on interviewDate
   const formattedDate = interviewDate && isValid(interviewDate) 
@@ -536,7 +502,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                       <TextField
                         label="Tiempo de comida"
                         variant="outlined"
-                        value={mealtime(consumptionTime)}
+                        value={mealtime(consumptionTime, isHoliday === "YES")}
                         disabled
                         fullWidth
                       />

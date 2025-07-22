@@ -29,6 +29,8 @@ import {
   foodTableNutritionCols,
   formatNutritionValue,
 } from "./interview/IngredientFields";
+import { mealtime } from "./interview/InterviewForm";
+import { parseTime } from "../date";
 
 type Interviewed = {
   id?: number;
@@ -93,8 +95,11 @@ export default function ListInterviewed() {
 
   const getCsvData = async () => {
     const response = await api.get("/interviews/export");
-    const csvData = response.data.map(({ food, ...rest }: any) => ({
+    const csvData = response.data.map(({ food, recipeConsumptionTime, isHoliday, ...rest }: any) => ({
       ...rest,
+      recipeConsumptionTime: recipeConsumptionTime,
+      isHoliday: isHoliday === "YES"? "SI": "NO",
+      mealtime: mealtime(parseTime(recipeConsumptionTime), isHoliday),
       foodName: food.name,
       foodCode: food.code,
       ...foodTableNutritionCols.reduce(
@@ -140,7 +145,9 @@ export default function ListInterviewed() {
               { displayName: "Fecha de la encuesta", id: "interviewDate" },
               { displayName: "N°R24H", id: "interviewPersonNumber" },
               { displayName: "Día", id: "day" },
+              { displayName: "Feriado", id: "isHoliday" },
               { displayName: "Hora de consumo", id: "recipeConsumptionTime" },
+              { displayName: "Tiempo de comida", id: "mealtime" },
               { displayName: "Procedencia", id: "recipeOrigin" },
               {
                 displayName: "Código de forma de preparación",
