@@ -4,6 +4,7 @@ import { FileDownload } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Box,
   Fab,
   InputAdornment,
   Stack,
@@ -17,15 +18,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import React from "react";
-import CsvDownloader from 'react-csv-downloader';
+import CsvDownloader from "react-csv-downloader";
 import useSWR from "swr";
 import { api } from "../(api)/api";
 import { Page } from "../(api)/pagination";
 import { withOutSorting } from "../(components)/helpers/withOutSorting";
 import { usePagination } from "../(components)/hook-customization/usePagination";
 import Loading from "../(components)/Loading";
-import { foodTableNutritionCols, formatNutritionValue } from "./interview/IngredientFields";
-
+import {
+  foodTableNutritionCols,
+  formatNutritionValue,
+} from "./interview/IngredientFields";
 
 type Interviewed = {
   id?: number;
@@ -57,8 +60,8 @@ export default function ListInterviewed() {
       (
         [
           { field: "code", headerName: "Código" },
-          { field: "firstName", headerName: "Nombre", minWidth: 200 },
-          { field: "lastName", headerName: "Apellidos", minWidth: 200 },
+          { field: "firstName", headerName: "Nombre", flex: 1 },
+          { field: "lastName", headerName: "Apellidos", flex: 1 },
           {
             field: "actions",
             type: "actions",
@@ -70,7 +73,7 @@ export default function ListInterviewed() {
                     icon={<SearchIcon />}
                     label="Ver"
                     onClick={() => router.push("/interviewed/" + params.id)}
-                  //This could be replaced with a Link**
+                    //This could be replaced with a Link**
                   />
                 </Tooltip>,
               ];
@@ -88,17 +91,26 @@ export default function ListInterviewed() {
     setSearchText(searchText);
   };
 
-  
   const getCsvData = async () => {
-    const response = await api.get("/interviews/export")
-    const csvData = response.data.map(({ food, ...rest}: any) => ({ 
-      ...rest, 
-      foodName: food.name, 
+    const response = await api.get("/interviews/export");
+    const csvData = response.data.map(({ food, ...rest }: any) => ({
+      ...rest,
+      foodName: food.name,
       foodCode: food.code,
-      ...foodTableNutritionCols.reduce((prev, foodProp) => ({ ...prev, [foodProp.id]: formatNutritionValue(food, rest.quantityConsumed, foodProp.id) }), {})
-    }))
+      ...foodTableNutritionCols.reduce(
+        (prev, foodProp) => ({
+          ...prev,
+          [foodProp.id]: formatNutritionValue(
+            food,
+            rest.quantityConsumed,
+            foodProp.id
+          ),
+        }),
+        {}
+      ),
+    }));
     return csvData;
-  }
+  };
 
   return (
     <Stack direction="column" spacing={2}>
@@ -118,7 +130,6 @@ export default function ListInterviewed() {
             </Tooltip>
           </Link>
         </div>
-
         <div>
           <CsvDownloader
             datas={getCsvData}
@@ -131,17 +142,32 @@ export default function ListInterviewed() {
               { displayName: "Día", id: "day" },
               { displayName: "Hora de consumo", id: "recipeConsumptionTime" },
               { displayName: "Procedencia", id: "recipeOrigin" },
-              { displayName: "Código de forma de preparación", id: "recipeCode" },
+              {
+                displayName: "Código de forma de preparación",
+                id: "recipeCode",
+              },
               { displayName: "Nombre de preparación", id: "recipeName" },
-              { displayName: "Porción servida (medida casera)", id: "portionServed" },
+              {
+                displayName: "Porción servida (medida casera)",
+                id: "portionServed",
+              },
               { displayName: "Porción servida peso g", id: "weightInGrams" },
               { displayName: "Residuo porción", id: "portionResidue" },
-              { displayName: "Residuo porción peso g", id: "weightInGramsResidue" },
-              { displayName: "Cantidad consumida peso g", id: "quantityConsumed" },
+              {
+                displayName: "Residuo porción peso g",
+                id: "weightInGramsResidue",
+              },
+              {
+                displayName: "Cantidad consumida peso g",
+                id: "quantityConsumed",
+              },
               { displayName: "Código de fuente", id: "source" },
-              { displayName: "Ingrediente (nombre del alimento)", id: "foodName" },
+              {
+                displayName: "Ingrediente (nombre del alimento)",
+                id: "foodName",
+              },
               { displayName: "Código alimento - tabla", id: "foodCode" },
-              ...foodTableNutritionCols
+              ...foodTableNutritionCols,
             ]}
             filename="entrevistas"
             wrapColumnChar={`"`}
@@ -168,11 +194,12 @@ export default function ListInterviewed() {
             ),
           },
         }}
+        fullWidth
       />
-
-      <div style={{ height: "70vh" }}>
+      <Box sx={{ width: "100%", height: "70vh" }}>
         {people ? (
           <DataGrid
+            sx={{ overflowX: "scroll" }}
             loading={isLoading}
             columns={columns}
             rowCount={people?.page.totalElements || 0}
@@ -186,7 +213,7 @@ export default function ListInterviewed() {
         ) : (
           <Loading />
         )}
-      </div>
+      </Box>
     </Stack>
   );
 }

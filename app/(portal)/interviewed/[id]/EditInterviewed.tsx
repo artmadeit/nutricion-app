@@ -18,69 +18,80 @@ import { FormContainer } from "react-hook-form-mui";
 import useSWR from "swr";
 import { schema } from "../create/personSchema";
 
-
-
 type Interview = {
   id: number;
-  interviewPersonNumber: string,
-  interviewDate: Date,
-}
+  interviewPersonNumber: string;
+  interviewDate: Date;
+};
 
 export function EditInterviewed({ id }: { id: number }) {
-  const snackbar = useContext(SnackbarContext)
-  const router = useRouter()
+  const snackbar = useContext(SnackbarContext);
+  const router = useRouter();
   const { data: person, mutate } = useSWR(id ? `people/${id}` : null);
-  const { data: interviews, isLoading } = useSWR(id ? `interviews?personId=${id}` : null);
+  const { data: interviews, isLoading } = useSWR(
+    id ? `interviews?personId=${id}` : null
+  );
 
   const columns = useMemo(
-    () => (
-      [
-        { field: "interviewPersonNumber", headerName: "N° R24H" },
-        { field: "interviewDate", headerName: "Fecha" },
-        {
-          field: "actions",
-          type: "actions",
-          width: 80,
-          getActions: (params) => {
-            return [
-              <Tooltip title="Ver más" key="edit">
-                <GridActionsCellItem
-                  icon={<SearchIcon />}
-                  label="Ver"
-                  onClick={() => router.push(`/interview/${id}?number=${params.row.interviewPersonNumber}`)}
-                  //This could be replaced with a Link**
-                />
-              </Tooltip>,
-            ];
+    () =>
+      (
+        [
+          { field: "interviewPersonNumber", headerName: "N° R24H" },
+          { field: "interviewDate", headerName: "Fecha" },
+          {
+            field: "actions",
+            type: "actions",
+            width: 80,
+            getActions: (params) => {
+              return [
+                <Tooltip title="Ver más" key="edit">
+                  <GridActionsCellItem
+                    icon={<SearchIcon />}
+                    label="Ver"
+                    onClick={() =>
+                      router.push(
+                        `/interview/${id}?number=${params.row.interviewPersonNumber}`
+                      )
+                    }
+                    //This could be replaced with a Link**
+                  />
+                </Tooltip>,
+              ];
+            },
           },
-        },
-      ] as GridColDef<Interview>[]).map(withOutSorting),
+        ] as GridColDef<Interview>[]
+      ).map(withOutSorting),
     [router, id]
   );
 
   if (!person) return <Loading />;
   return (
     <div>
-      <Typography variant="h4">Editar persona</Typography>
       <FormContainer
         defaultValues={person}
         resolver={zodResolver(schema)}
         onSuccess={async (values) => {
           await api.put(`/people/${id}`, values);
           mutate();
-          snackbar.showMessage("Información de la persona guardada");          
-          router.push("/")
-        }}>
+          snackbar.showMessage("Información de la persona guardada");
+          router.push("/");
+        }}
+      >
         <Grid container spacing={2} margin={2}>
+          <Typography variant="h4">Editar persona</Typography>
           <GeneralPersonData />
           <Grid size={12}>
-            <Button variant="contained" type="submit">Guardar</Button>
+            <Button variant="contained" type="submit">
+              Guardar
+            </Button>
           </Grid>
           <Grid size={12}>
             <Stack direction="column" spacing={2}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Typography variant="h5">Entrevistas</Typography>
-                <Link href={`/interview/${id}?number=${interviews?.length + 1}`}>
+                <Link
+                  href={`/interview/${id}?number=${interviews?.length + 1}`}
+                >
                   <Tooltip title="Crear">
                     <Fab color="primary" aria-labelledby="add">
                       <AddIcon />
@@ -88,14 +99,16 @@ export function EditInterviewed({ id }: { id: number }) {
                   </Tooltip>
                 </Link>
               </Stack>
-              <div style={{ height: "70vh" }}>
+              <div style={{ height: "70vh", width: "100%" }}>
                 <DataGrid
-                  getRowId={row => row.interviewPersonNumber}
+                  getRowId={(row) => row.interviewPersonNumber}
                   loading={isLoading}
                   columns={columns}
                   disableColumnFilter
                   rows={interviews}
-                  localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+                  localeText={
+                    esES.components.MuiDataGrid.defaultProps.localeText
+                  }
                 />
               </div>
             </Stack>
