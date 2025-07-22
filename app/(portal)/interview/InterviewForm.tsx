@@ -331,7 +331,6 @@ export function InterviewForm({ personId }: { personId: number }) {
                   </Select>
                 </FormControl>
               </Grid>
-
               <Grid size={6}>
                 <DatePicker
                   sx={{ width: "100%" }}

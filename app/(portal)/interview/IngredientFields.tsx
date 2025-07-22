@@ -2,9 +2,30 @@ import { Page } from "@/app/(api)/pagination";
 import { InfoOutlined } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Dialog, DialogContent, DialogTitle, Divider, Fab, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Fab,
+  Grid,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import React, { useEffect } from "react";
-import { AutocompleteElement, SelectElement, TextFieldElement } from "react-hook-form-mui";
+import {
+  AutocompleteElement,
+  SelectElement,
+  TextFieldElement,
+} from "react-hook-form-mui";
 import useSWR from "swr";
 
 interface IngredientFieldsProps {
@@ -43,10 +64,10 @@ interface Food extends NutritionProperties {
 
 export const mapFoodToOption = (x: Food) => ({
   label: x.name,
-  ...x
-})
+  ...x,
+});
 
-export const emptyFood = { id: 0, label: "" }
+export const emptyFood = { id: 0, label: "" };
 
 export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   ingredient,
@@ -56,16 +77,14 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   removeIngredient,
 }) => {
   const { weightInGrams, weigthInGramsResidue } = ingredient;
-  const quantityConsumed = (
-    weightInGrams - weigthInGramsResidue
-  ).toFixed(1);
+  const quantityConsumed = (weightInGrams - weigthInGramsResidue).toFixed(1);
 
   const [searchTextFood, setSearchTextFood] = React.useState("");
   useEffect(() => {
     if (ingredient) {
-      setSearchTextFood(ingredient.food?.label)
+      setSearchTextFood(ingredient.food?.label);
     }
-  }, [ingredient])
+  }, [ingredient]);
 
   // TODO: andre probar instalar una libreria parece que esto trae errores
   // const [searchTextDebounced] = useDebounce(
@@ -73,16 +92,20 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   //   500
   // );
   // cambiar la busqueda  useSWR<Page<Food>>(searchTextFoodDebounced? ...revisar este commit fix: page size
-  const { data: foods } = useSWR<Page<Food>>(searchTextFood ? [
-    `/foods/search/findByNameContainsIgnoringCase`,
-    {
-      params: {
-        searchText: searchTextFood,
-        page: 0,
-        size: 50,
-      },
-    },
-  ] : null);
+  const { data: foods } = useSWR<Page<Food>>(
+    searchTextFood
+      ? [
+          `/foods/search/findByNameContainsIgnoringCase`,
+          {
+            params: {
+              searchText: searchTextFood,
+              page: 0,
+              size: 50,
+            },
+          },
+        ]
+      : null
+  );
 
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -97,7 +120,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           fullWidth
         />
       </Grid>
-      <Grid size={3}>
+      <Grid size={{ xs: 11, sm: 3 }}>
         <TextField
           label="Código alimento tabla"
           value={ingredient.food?.code || "-"}
@@ -105,20 +128,19 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           fullWidth
         />
       </Grid>
-      <Grid size={7}>
+      <Grid size={{ xs: 12, sm: 7 }}>
         <AutocompleteElement
           autocompleteProps={{
             onInputChange: (_event, newInputValue) => {
               setSearchTextFood(newInputValue);
             },
-            getOptionKey: (option) => typeof option === 'string' ? option : option.id
+            getOptionKey: (option) =>
+              typeof option === "string" ? option : option.id,
           }}
           required
           label="Ingrediente (nombre del Alimento)"
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.food`}
-          options={
-            foods?._embedded?.foods.map(mapFoodToOption) || []
-          }
+          options={foods?._embedded?.foods.map(mapFoodToOption) || []}
         />
       </Grid>
       <Grid
@@ -131,13 +153,16 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
       >
         {ingredientsLength > 1 && (
           <Tooltip title="Eliminar ingrediente">
-            <Fab size="small" onClick={() => removeIngredient(recipeIndex, ingredientIndex)}>
+            <Fab
+              size="small"
+              onClick={() => removeIngredient(recipeIndex, ingredientIndex)}
+            >
               <DeleteIcon />
             </Fab>
           </Tooltip>
         )}
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextFieldElement
           fullWidth
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.portionServed`}
@@ -178,7 +203,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           fullWidth
         />
       </Grid>
-      <Grid size={4}>
+      <Grid size={{ xs: 10, sm: 4 }}>
         <SelectElement
           label="Fuente"
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.source`}
@@ -222,8 +247,21 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
       <Grid size={12}>
         <Divider />
       </Grid>
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            m: 0,
+            p: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           Información nutricional
           <IconButton
             aria-label="close"
@@ -240,22 +278,24 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
                 <TableRow>
                   <TableCell>Código</TableCell>
                   <TableCell>Nombre</TableCell>
-                  {
-                    foodTableNutritionCols.map(x => <TableCell key={x.id}>{x.displayName}</TableCell>)
-                  }
+                  {foodTableNutritionCols.map((x) => (
+                    <TableCell key={x.id}>{x.displayName}</TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell>{ingredient.food?.code ?? '-'}</TableCell>
-                  <TableCell>{ingredient.food?.name ?? '-'}</TableCell>
-                  {
-                    foodTableNutritionCols.map(x =>
-                      <TableCell key={x.id}>
-                        {formatNutritionValue(ingredient.food, Number(quantityConsumed), x.id)}
-                      </TableCell>
-                    )
-                  }
+                  <TableCell>{ingredient.food?.code ?? "-"}</TableCell>
+                  <TableCell>{ingredient.food?.name ?? "-"}</TableCell>
+                  {foodTableNutritionCols.map((x) => (
+                    <TableCell key={x.id}>
+                      {formatNutritionValue(
+                        ingredient.food,
+                        Number(quantityConsumed),
+                        x.id
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableBody>
             </Table>
@@ -266,8 +306,14 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
   );
 };
 
-export function formatNutritionValue(food: Food, quantityConsumed: number, nutritionProperty: NutritionProperty) {
-  return food?.[nutritionProperty] != null ? getNutritionValue(quantityConsumed, food[nutritionProperty]).toFixed(2) : '-'
+export function formatNutritionValue(
+  food: Food,
+  quantityConsumed: number,
+  nutritionProperty: NutritionProperty
+) {
+  return food?.[nutritionProperty] != null
+    ? getNutritionValue(quantityConsumed, food[nutritionProperty]).toFixed(2)
+    : "-";
 }
 
 export const foodTableNutritionCols: {
@@ -288,8 +334,8 @@ export const foodTableNutritionCols: {
   { id: "tiaminaMg", displayName: "Tiamina (mg)" },
   { id: "vitaminaAG", displayName: "Riboflavina (mg)" },
   { id: "vitaminaCMg", displayName: "Niacina (mg)" },
-  { id: "zincMg", displayName: "Vitamina C (mg)" }
-]
+  { id: "zincMg", displayName: "Vitamina C (mg)" },
+];
 
 const getNutritionValue = (quantityConsumed: number, nutrition: number) =>
-  quantityConsumed * nutrition / 100.0;
+  (quantityConsumed * nutrition) / 100.0;
