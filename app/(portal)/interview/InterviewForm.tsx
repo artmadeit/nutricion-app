@@ -310,7 +310,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                   Datos recordatorio - R24H
                 </Typography>
               </Grid>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextFieldElement
                   fullWidth
                   name="interviewNumber"
@@ -318,7 +318,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                   disabled
                 />
               </Grid>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth>
                   <InputLabel id="interviewPersonNumber">N° R24H</InputLabel>
                   <Select
@@ -333,7 +333,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <DatePicker
                   sx={{ width: "100%" }}
                   value={interviewDate}
@@ -345,7 +345,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                   }}
                 />
               </Grid>
-              <Grid size={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   label="Día"
                   variant="outlined"
