@@ -31,7 +31,7 @@ export default function GeneralPersonData({
           disabled={disabled}
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextFieldElement
           fullWidth
           name="firstName"
@@ -40,7 +40,7 @@ export default function GeneralPersonData({
           disabled={disabled}
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextFieldElement
           fullWidth
           name="lastName"

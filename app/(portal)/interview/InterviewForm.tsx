@@ -115,7 +115,8 @@ export const mealtime = (consumptionTime: Date, isHoliday: boolean) => {
   if (hour >= 13 && hour <= 15) return "Almuerzo";
   if (hour >= 15 && hour <= 18) return "Media tarde";
   if (hour >= 18 && hour <= 21 && (hour !== 21 || minute === 0)) return "Cena";
-  if ((hour === 21 && minute > 0) || (hour > 21 && hour < 24)) return "Medianoche";
+  if ((hour === 21 && minute > 0) || (hour > 21 && hour < 24))
+    return "Medianoche";
 
   return "-";
 };
@@ -173,12 +174,13 @@ export function InterviewForm({ personId }: { personId: number }) {
 
   const interviewDate = formContext.watch("interviewDate");
   const isHoliday = formContext.watch("isHoliday");
-  
+
   // Fetch holiday data based on interviewDate
-  const formattedDate = interviewDate && isValid(interviewDate) 
-    ? lightFormat(interviewDate, "yyyy-MM-dd") 
-    : null;
-  
+  const formattedDate =
+    interviewDate && isValid(interviewDate)
+      ? lightFormat(interviewDate, "yyyy-MM-dd")
+      : null;
+
   const { data: holidayData } = useSWR(
     formattedDate ? `/is-holiday?date=${formattedDate}` : null
   );
@@ -186,7 +188,7 @@ export function InterviewForm({ personId }: { personId: number }) {
   // Update isHoliday when holiday data changes
   useEffect(() => {
     if (holidayData !== undefined) {
-      formContext.setValue("isHoliday", holidayData? "YES": "NO");
+      formContext.setValue("isHoliday", holidayData ? "YES" : "NO");
     }
   }, [holidayData, formContext]);
 
@@ -390,7 +392,7 @@ export function InterviewForm({ personId }: { personId: number }) {
 
                 return (
                   <Grid container key={recipeIndex}>
-                    <Grid size={5}>
+                    <Grid size={{ xs: 12, sm: 5 }}>
                       <Autocomplete
                         value={code}
                         inputValue={code}
@@ -425,7 +427,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                         )}
                       />
                     </Grid>
-                    <Grid size={6}>
+                    <Grid size={{ xs: 10, sm: 6 }}>
                       <Autocomplete
                         value={name}
                         inputValue={name}
@@ -476,7 +478,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                         </Tooltip>
                       )}
                     </Grid>
-                    <Grid size={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TimePicker
                         label="Hora de consumo"
                         ampm
@@ -497,7 +499,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                         }}
                       />
                     </Grid>
-                    <Grid size={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         label="Tiempo de comida"
                         variant="outlined"
@@ -506,7 +508,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                         fullWidth
                       />
                     </Grid>
-                    <Grid size={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <SelectElement
                         label="Procedencia"
                         name={`recipes.${recipeIndex}.origin`}
