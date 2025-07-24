@@ -169,7 +169,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           label="Porción servida (medida casera)"
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextFieldElement
           fullWidth
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.weightInGrams`}
@@ -178,14 +178,14 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           type="number"
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextFieldElement
           fullWidth
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.portionResidue`}
           label="Residuo porción"
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextFieldElement
           fullWidth
           name={`recipes.${recipeIndex}.ingredients.${ingredientIndex}.weigthInGramsResidue`}
@@ -194,7 +194,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           required
         />
       </Grid>
-      <Grid size={6}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
           label="Cantidad consumida"
           variant="outlined"
