@@ -111,7 +111,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
 
   return (
     <React.Fragment>
-      <Grid size={1}>
+      <Grid size={{ xs: 3, sm: 1 }}>
         <TextField
           variant="outlined"
           label="N° Orden de Alimento"
@@ -120,7 +120,7 @@ export const IngredientFields: React.FC<IngredientFieldsProps> = ({
           fullWidth
         />
       </Grid>
-      <Grid size={{ xs: 11, sm: 3 }}>
+      <Grid size={{ xs: 9, sm: 3 }}>
         <TextField
           label="Código alimento tabla"
           value={ingredient.food?.code || "-"}
