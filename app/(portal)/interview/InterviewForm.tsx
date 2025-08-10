@@ -287,6 +287,7 @@ export function InterviewForm({ personId }: { personId: number }) {
                     source: x.source,
                   })),
                 })),
+                isHoliday: values.isHoliday === "YES",
               };
 
               if (interview) {
