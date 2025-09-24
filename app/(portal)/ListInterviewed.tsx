@@ -75,7 +75,7 @@ export default function ListInterviewed() {
                     icon={<SearchIcon />}
                     label="Ver"
                     onClick={() => router.push("/interviewed/" + params.id)}
-                    //This could be replaced with a Link**
+                  //This could be replaced with a Link**
                   />
                 </Tooltip>,
               ];
@@ -95,25 +95,41 @@ export default function ListInterviewed() {
 
   const getCsvData = async () => {
     const response = await api.get("/interviews/export");
-    const csvData = response.data.map(({ food, recipeConsumptionTime, isHoliday, ...rest }: any) => ({
-      ...rest,
-      recipeConsumptionTime: recipeConsumptionTime,
-      isHoliday: isHoliday === "YES"? "SI": "NO",
-      mealtime: mealtime(parseTime(recipeConsumptionTime), isHoliday),
-      foodName: food.name,
-      foodCode: food.code,
-      ...foodTableNutritionCols.reduce(
-        (prev, foodProp) => ({
-          ...prev,
-          [foodProp.id]: formatNutritionValue(
-            food,
-            rest.quantityConsumed,
-            foodProp.id
-          ),
-        }),
-        {}
-      ),
-    }));
+    const csvData = response.data.map(({ food, recipeConsumptionTime, isHoliday, ...rest }: any) => {
+      const data: any = {
+        interviewNumber: rest.interviewNumber,
+        personCode: rest.personCode,
+        personFullName: rest.personFullName,
+        interviewDate: rest.interviewDate,
+        interviewPersonNumber: rest.interviewPersonNumber,
+        day: rest.day,
+        isHoliday: isHoliday === "YES" ? "SI" : "NO",
+        recipeConsumptionTime: recipeConsumptionTime,
+        mealtime: mealtime(parseTime(recipeConsumptionTime), isHoliday),
+        recipeOrigin: rest.recipeOrigin,
+        recipeCode: rest.recipeCode,
+        recipeName: rest.recipeName,
+        portionServed: rest.portionServed,
+        weightInGrams: rest.weightInGrams,
+        portionResidue: rest.portionResidue,
+        weightInGramsResidue: rest.weightInGramsResidue,
+        quantityConsumed: rest.quantityConsumed,
+        source: rest.source,
+        foodName: food.name,
+        foodCode: food.code,
+      }
+
+      foodTableNutritionCols.forEach(foodProp => {
+        data[foodProp.id] = formatNutritionValue(
+          food,
+          rest.quantityConsumed,
+          foodProp.id
+        );
+      });
+
+      return data;
+    });
+
     return csvData;
   };
 

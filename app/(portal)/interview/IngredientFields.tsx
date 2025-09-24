@@ -37,21 +37,19 @@ interface IngredientFieldsProps {
 }
 
 interface NutritionProperties {
-  calcioMg: number;
-  fibra: number;
   energiaKcal: number;
-  carbohidratog: number;
-  fosforoMg: number;
-  grasaTotalG: number;
-  hierroMg: number;
-  niacinaMg: number;
-  potasioMg: number;
   proteinasG: number;
-  riboflavinaMg: number;
-  tiaminaMg: number;
-  vitaminaAG: number;
-  vitaminaCMg: number;
+  grasaTotalG: number;
+  calcioMg: number;
+  fosforoMg: number;
   zincMg: number;
+  potasioMg: number;
+  hierroMg: number;
+  vitaminaAG: number;
+  tiaminaMg: number;
+  riboflavinaMg: number;
+  niacinaMg: number;
+  vitaminaCMg: number;
 }
 
 type NutritionProperty = keyof NutritionProperties;
@@ -320,21 +318,21 @@ export const foodTableNutritionCols: {
   id: NutritionProperty;
   displayName: string;
 }[] = [
-  { id: "calcioMg", displayName: "Energía (kcal)" },
-  { id: "carbohidratog", displayName: "Proteínas (g)" },
-  { id: "fibra", displayName: "Grasa totales (g)" },
-  { id: "energiaKcal", displayName: "Carbohidratos disponibles (g)" },
-  { id: "fosforoMg", displayName: "Fibra (g)" },
-  { id: "grasaTotalG", displayName: "Calcio (mg)" },
-  { id: "hierroMg", displayName: "Fósforo (mg)" },
-  { id: "niacinaMg", displayName: "Zinc (mg)" },
+  { id: "energiaKcal", displayName: "Energía (kcal)" },
+  { id: "proteinasG", displayName: "Proteínas (g)" },
+  { id: "grasaTotalG", displayName: "Grasas totales (g)" },
+  // TODO:{ id: "carbohidratog", displayName: "Carbohidratos disponibles (g)" },
+  // TODO: { id: "fibra", displayName: "Fibra (g)" },
+  { id: "calcioMg", displayName: "Calcio (mg)" },
+  { id: "fosforoMg", displayName: "Fósforo (mg)" },
+  { id: "zincMg", displayName: "Zinc (mg)" },
   { id: "potasioMg", displayName: "Potasio (mg)" },
-  { id: "proteinasG", displayName: "Hierro (mg)" },
-  { id: "riboflavinaMg", displayName: "Vitamina A (g)" },
+  { id: "hierroMg", displayName: "Hierro (mg)" },
+  { id: "vitaminaAG", displayName: "Vitamina A (g)" },
   { id: "tiaminaMg", displayName: "Tiamina (mg)" },
-  { id: "vitaminaAG", displayName: "Riboflavina (mg)" },
-  { id: "vitaminaCMg", displayName: "Niacina (mg)" },
-  { id: "zincMg", displayName: "Vitamina C (mg)" },
+  { id: "riboflavinaMg", displayName: "Riboflavina (mg)" },
+  { id: "niacinaMg", displayName: "Niacina (mg)" },
+  { id: "vitaminaCMg", displayName: "Vitamina C (mg)" },
 ];
 
 const getNutritionValue = (quantityConsumed: number, nutrition: number) =>
