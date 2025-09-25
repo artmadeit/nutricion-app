@@ -40,6 +40,8 @@ interface NutritionProperties {
   energiaKcal: number;
   proteinasG: number;
   grasaTotalG: number;
+  carbohidratosDisponiblesG: number;
+  fibraG: number;
   calcioMg: number;
   fosforoMg: number;
   zincMg: number;
@@ -321,8 +323,8 @@ export const foodTableNutritionCols: {
   { id: "energiaKcal", displayName: "Energía (kcal)" },
   { id: "proteinasG", displayName: "Proteínas (g)" },
   { id: "grasaTotalG", displayName: "Grasas totales (g)" },
-  // TODO:{ id: "carbohidratog", displayName: "Carbohidratos disponibles (g)" },
-  // TODO: { id: "fibra", displayName: "Fibra (g)" },
+  { id: "carbohidratosDisponiblesG", displayName: "Carbohidratos disponibles (g)" },
+  { id: "fibraG", displayName: "Fibra (g)" },
   { id: "calcioMg", displayName: "Calcio (mg)" },
   { id: "fosforoMg", displayName: "Fósforo (mg)" },
   { id: "zincMg", displayName: "Zinc (mg)" },
